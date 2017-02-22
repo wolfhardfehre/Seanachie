@@ -1,0 +1,35 @@
+<resources>
+
+    <string name="app_name">Seanachie</string>
+    <string name="no_text">kein Text</string>
+
+    <!-- drawer -->
+    <string name="navigation_forms">Formulare</string>
+    <string name="navigation_form_create">Neues Formular</string>
+    <string name="navigation_pets">Tiere</string>
+    <string name="navigation_pet_create">Neues Tier</string>
+    <string name="navigation_about">Über uns</string>
+    <string name="navigation_categories">Kategorien</string>
+    <string name="drawer_open">open</string>
+    <string name="drawer_close">close</string>
+
+    <!-- categories recycler item -->
+    <string name="recycler_forms_heading">Überschrift</string>
+    <string name="recycler_forms_content">Inhalt</string>
+    <string name="recycler_forms_categories">Kategorien</string>
+
+    <!-- create category dialog -->
+    <string name="dialog_category_create_title">Kategorie anlegen</string>
+    <string name="dialog_category_create_save">Speichern</string>
+    <string name="dialog_category_create_cancel">Abbrechen</string>
+    <string name="dialog_category_create_hint">Name der Kategorie</string>
+
+    <!-- imageStory create recycler -->
+    <string name="recycler_pet_create_category">Kategorie</string>
+    <string name="recycler_pet_create_category_hint">editieren</string>
+
+    <!-- imageStory create fragment -->
+    <string name="fragment_pet_create_name">Name</string>
+    <string name="fragment_pet_create_story">Geschichte</string>
+
+</resources>

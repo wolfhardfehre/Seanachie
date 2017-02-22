@@ -1,0 +1,56 @@
+/*
+ * Copyright 2017, Wolfhard Fehre
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.nicefontaine.seanachie.data.models;
+
+
+import android.support.annotation.NonNull;
+
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+
+@DatabaseTable(tableName = "categories")
+public class Category extends BaseEntry {
+
+    @DatabaseField
+    private String key;
+
+    @DatabaseField
+    private String value;
+
+    public Category() {
+        // ORMLite needs a no-arg constructor
+        super(-1);
+    }
+
+    public Category(int position, String key) {
+        super(position);
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+}

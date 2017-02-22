@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/card_margin"
+    android:orientation="vertical"
+    app:cardCornerRadius="@dimen/card_corners"
+    app:cardElevation="@dimen/card_elevation">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/standard_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:orientation="vertical"
+            android:paddingEnd="@dimen/standard_padding"
+            android:paddingStart="@dimen/standard_padding">
+
+            <TextView
+                android:id="@+id/recycler_item_pet_create_key"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/recycler_forms_heading"
+                android:textAllCaps="true"
+                android:textColor="@color/grey_dark"
+                android:textSize="@dimen/text_label_size" />
+
+            <EditText
+                android:id="@+id/recycler_item_pet_create_edittext"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/recycler_pet_create_category_hint"
+                android:inputType="textMultiLine|textAutoComplete|textAutoCorrect" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/standard_padding"
+            android:layout_marginStart="@dimen/standard_padding"
+            android:background="@color/grey_pinkish"
+            android:orientation="vertical" />
+
+        <ImageView
+            android:id="@+id/recycler_item_pet_create_image"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.8"
+            android:alpha="0.5"
+            android:src="@drawable/ic_mic_black_48dp"
+            tools:ignore="ContentDescription" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>
