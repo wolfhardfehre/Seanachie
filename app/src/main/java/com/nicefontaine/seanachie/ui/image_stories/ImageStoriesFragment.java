@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
+import com.nicefontaine.seanachie.data.Session;
 import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.ui.BaseActivity;
@@ -41,6 +42,8 @@ import com.nicefontaine.seanachie.ui.dialogs.FormPickerDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,13 +58,17 @@ public class ImageStoriesFragment extends Fragment implements
         ItemTouchCallback.OnItemTouchListener {
 
     private static final String FORM_PICKER = "form_picker";
-    @BindView(R.id.toolbar) protected Toolbar toolbar;
-    @BindView(R.id.f_base_coordinator) public CoordinatorLayout coordinator;
-    @BindView(R.id.f_base_recycler) protected RecyclerView recycler;
+
     private Context context;
     private List<ImageStory> imageStories;
     private ImageStoriesAdapter adapter;
     private ImageStoriesContract.Presenter presenter;
+
+    @Inject protected Session session;
+
+    @BindView(R.id.toolbar) protected Toolbar toolbar;
+    @BindView(R.id.f_base_coordinator) public CoordinatorLayout coordinator;
+    @BindView(R.id.f_base_recycler) protected RecyclerView recycler;
 
     public static ImageStoriesFragment newInstance() {
         return new ImageStoriesFragment();
@@ -90,7 +97,7 @@ public class ImageStoriesFragment extends Fragment implements
     public void onStart() {
         super.onStart();
         ((BaseActivity) context).initNavigationDrawer(toolbar);
-        toolbar.setTitle(R.string.navigation_pets);
+        toolbar.setTitle(R.string.navigation_image_stories);
     }
 
     @Override
@@ -100,8 +107,9 @@ public class ImageStoriesFragment extends Fragment implements
     }
 
     @OnClick(R.id.f_base_fab)
-    public void addPet() {
-        presenter.addPet();
+    public void addImageStory() {
+        session.removeSetting(R.string.pref_cached_form);
+        presenter.addImageStory();
     }
 
     @Override
@@ -125,23 +133,13 @@ public class ImageStoriesFragment extends Fragment implements
     }
 
     @Override
-    public void intercept() {
-
-    }
-
-    @Override
-    public void release() {
-
-    }
-
-    @Override
     public void loadForms(List<Form> forms) {
         DialogFragment df = FormPickerDialogFragment.newInstance(forms);
         df.show(getActivity().getSupportFragmentManager(), FORM_PICKER);
     }
 
     @Override
-    public void loadPets(List<ImageStory> imageStories) {
+    public void loadImageStories(List<ImageStory> imageStories) {
         this.imageStories = imageStories;
     }
 

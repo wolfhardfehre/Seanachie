@@ -6,8 +6,8 @@
     <!-- drawer -->
     <string name="navigation_forms">Formulare</string>
     <string name="navigation_form_create">Neues Formular</string>
-    <string name="navigation_pets">Tiere</string>
-    <string name="navigation_pet_create">Neues Tier</string>
+    <string name="navigation_image_stories">Tiere</string>
+    <string name="navigation_image_story_create">Neues Tier</string>
     <string name="navigation_about">Über uns</string>
     <string name="navigation_categories">Kategorien</string>
     <string name="drawer_open">open</string>
@@ -25,11 +25,11 @@
     <string name="dialog_category_create_hint">Name der Kategorie</string>
 
     <!-- imageStory create recycler -->
-    <string name="recycler_pet_create_category">Kategorie</string>
-    <string name="recycler_pet_create_category_hint">editieren</string>
+    <string name="recycler_image_story_create_category">Kategorie</string>
+    <string name="recycler_image_story_create_category_hint">editieren</string>
 
     <!-- imageStory create fragment -->
-    <string name="fragment_pet_create_name">Name</string>
-    <string name="fragment_pet_create_story">Geschichte</string>
+    <string name="fragment_image_story_create_name">Name</string>
+    <string name="fragment_image_story_create_story">Geschichte</string>
 
 </resources>

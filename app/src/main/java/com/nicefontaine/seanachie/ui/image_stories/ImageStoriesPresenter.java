@@ -64,7 +64,7 @@ public class ImageStoriesPresenter implements
     }
 
     @Override
-    public void addPet() {
+    public void addImageStory() {
         formsRepository.getForms(this);
     }
 
@@ -80,7 +80,7 @@ public class ImageStoriesPresenter implements
 
     @Override
     public void onImageStoriesLoaded(List<ImageStory> imageStories) {
-        view.loadPets(imageStories);
+        view.loadImageStories(imageStories);
         if (isResumed) {
             view.initRecycler();
         } else {

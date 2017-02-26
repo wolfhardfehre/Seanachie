@@ -124,16 +124,6 @@ public class FormCreateFragment extends Fragment implements
     }
 
     @Override
-    public void intercept() {
-
-    }
-
-    @Override
-    public void release() {
-
-    }
-
-    @Override
     public void loadCategories(List<Category> categories) {
         this.categories = categories;
     }

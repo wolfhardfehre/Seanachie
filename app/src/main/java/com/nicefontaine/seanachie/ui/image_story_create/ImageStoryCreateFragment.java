@@ -18,7 +18,10 @@ package com.nicefontaine.seanachie.ui.image_story_create;
 
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -28,20 +31,27 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
+import com.nicefontaine.seanachie.data.Session;
 import com.nicefontaine.seanachie.data.models.Category;
 import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.ui.BaseActivity;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.widget.LinearLayout.VERTICAL;
@@ -49,16 +59,24 @@ import static com.nicefontaine.seanachie.ui.BaseActivity.NAVIGATION_IMAGE_STORIE
 
 
 public class ImageStoryCreateFragment extends Fragment implements
-        ImageStoryCreateContract.View {
+        ImageStoryCreateContract.View,
+        ImageStoryCreateAdapter.OnImageClickedListener {
 
-    @BindView(R.id.toolbar) protected Toolbar toolbar;
-    @BindView(R.id.f_pet_create_coordinator) protected CoordinatorLayout coordinator;
-    @BindView(R.id.f_pet_create_recycler) protected RecyclerView recycler;
     private Context context;
     private List<Category> categories;
     private ImageStoryCreateAdapter adapter;
     private ImageStoryCreateContract.Presenter presenter;
+    private EditText currentValue;
+    private int currentPosition;
+    private Form currentForm;
 
+    @Inject protected Session session;
+
+    @BindView(R.id.toolbar) protected Toolbar toolbar;
+    @BindView(R.id.collapsing) protected CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.f_image_story_create_coordinator) protected CoordinatorLayout coordinator;
+    @BindView(R.id.f_image_story_create_recycler) protected RecyclerView recycler;
+    @BindView(R.id.f_image_story_create_backdrop) protected ImageView photo;
 
     public static ImageStoryCreateFragment newInstance() {
         return new ImageStoryCreateFragment();
@@ -77,7 +95,7 @@ public class ImageStoryCreateFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_pet_create, container, false);
+        View view = inflater.inflate(R.layout.fragment_image_story_create, container, false);
         ((SeanachieApp) context.getApplicationContext()).getAppComponent().inject(this);
         ButterKnife.bind(this, view);
         return view;
@@ -87,7 +105,7 @@ public class ImageStoryCreateFragment extends Fragment implements
     public void onStart() {
         super.onStart();
         ((BaseActivity) context).initNavigationDrawer(toolbar);
-        toolbar.setTitle(R.string.navigation_pet_create);
+        collapsingToolbarLayout.setTitle(getString(R.string.navigation_image_story_create));
     }
 
     @Override
@@ -96,12 +114,22 @@ public class ImageStoryCreateFragment extends Fragment implements
         presenter.onResume();
     }
 
-    @OnClick(R.id.recycler_item_pet_create_image)
-    public void makePhoto() {
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        presenter.result(requestCode, resultCode, intent);
     }
 
-    @OnClick(R.id.f_pet_create_fab)
+    @OnClick(R.id.f_image_story_create_photo_card)
+    public void takePicture() {
+        try {
+            presenter.camera(getActivity());
+        } catch (IOException e) {
+            Timber.e(e);
+        }
+    }
+
+    @OnClick(R.id.f_image_story_create_fab)
     public void createPet() {
         ImageStory imageStory = new ImageStory();
         imageStory.setName("Rolf");
@@ -111,10 +139,19 @@ public class ImageStoryCreateFragment extends Fragment implements
 
     @Override
     public void loadForm(Form form) {
-        this.categories = new ArrayList<>();
-        this.categories.add(new Category(0,getString(R.string.fragment_pet_create_name)));
-        this.categories.addAll(form.getCategories());
-        this.categories.add(new Category(categories.size(),getString(R.string.fragment_pet_create_story)));
+        Form cached = session.get(R.string.pref_cached_form, new Form());
+        if (cached.isEmpty()) {
+            this.categories = new ArrayList<>();
+            this.categories.add(new Category(0, getString(R.string.fragment_image_story_create_name)));
+            this.categories.addAll(form.getCategories());
+            this.categories.add(new Category(categories.size(), getString(R.string.fragment_image_story_create_story)));
+            currentForm = form;
+        } else {
+            this.categories = cached.getCategories();
+            String path = cached.getImagePath();
+            if (path != null) presenter.displayPhoto(path, 300);
+            currentForm = cached;
+        }
     }
 
     @Override
@@ -125,7 +162,7 @@ public class ImageStoryCreateFragment extends Fragment implements
     @Override
     public void initRecycler() {
         if (categories == null) categories = new ArrayList<>();
-        this.adapter = new ImageStoryCreateAdapter(context, categories);
+        this.adapter = new ImageStoryCreateAdapter(this, context, categories);
         recycler.setLayoutManager(new LinearLayoutManager(context, VERTICAL, false));
         recycler.setAdapter(adapter);
     }
@@ -137,13 +174,25 @@ public class ImageStoryCreateFragment extends Fragment implements
     }
 
     @Override
-    public void intercept() {
-
+    public void setStory(String story) {
+        categories.get(currentPosition).setValue(story);
+        currentForm.categories(categories);
+        cache();
     }
 
     @Override
-    public void release() {
+    public void setPhoto(Bitmap bitmap) {
+        photo.setImageBitmap(bitmap);
+    }
 
+    @Override
+    public void loadImagePath(String path) {
+        currentForm.image(path);
+        cache();
+    }
+
+    private void cache() {
+        session.store(R.string.pref_cached_form, currentForm);
     }
 
     @Override
@@ -154,5 +203,12 @@ public class ImageStoryCreateFragment extends Fragment implements
     @Override
     public void finish() {
         ((BaseActivity) context).changeContent(NAVIGATION_IMAGE_STORIES);
+    }
+
+    @Override
+    public void onImageClicked(ImageStoryCreateAdapter.CategoryHolder holder, int position) {
+        presenter.story(getActivity());
+        this.currentValue = holder.value;
+        this.currentPosition = position;
     }
 }

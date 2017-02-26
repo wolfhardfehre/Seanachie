@@ -19,10 +19,6 @@ package com.nicefontaine.seanachie.ui;
 
 public interface BaseView<T> {
 
-    void intercept();
-
-    void release();
-
     void setPresenter(T presenter);
 
 }

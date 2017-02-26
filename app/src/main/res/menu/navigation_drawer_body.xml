@@ -18,7 +18,7 @@
         <item
             android:id="@+id/navigation_pets"
             android:icon="@drawable/ic_pets_black_48dp"
-            android:title="@string/navigation_pets" />
+            android:title="@string/navigation_image_stories" />
 
         <item
             android:id="@+id/navigation_about"

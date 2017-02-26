@@ -23,7 +23,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.nicefontaine.seanachie.R;
+import com.nicefontaine.seanachie.data.models.Form;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +36,7 @@ import timber.log.Timber;
 public final class Session {
 
     private static Session instance;
+    private static final Gson gson = new Gson();
 
     private final Map<Integer, Object> cache;
     private final PersistentData persistentData;
@@ -88,6 +91,10 @@ public final class Session {
         cache.put(key, value);
     }
 
+    public void set(final int key, final Form value) {
+        cache.put(key, value);
+    }
+
     public void store(final int key, final boolean value) {
         set(key, value);
         persistentData.store(key, value);
@@ -111,6 +118,12 @@ public final class Session {
     public void store(final int key, final float value) {
         set(key, value);
         persistentData.store(key, value);
+    }
+
+    public void store(final int key, final Form value) {
+        set(key, value);
+        String json = gson.toJson(value);
+        persistentData.store(key, json);
     }
 
     public boolean get(final int key, final boolean defaultValue) {
@@ -169,6 +182,17 @@ public final class Session {
             return (float) value;
         } else {
             return (float) value;
+        }
+    }
+
+    public Form get(final int key, final Form defaultValue) {
+        Object value = cache.get(key);
+        if (value == null) {
+            String json = gson.toJson(defaultValue);
+            json = persistentData.restore(key, json);
+            return gson.fromJson(json, Form.class);
+        } else {
+            return (Form) value;
         }
     }
 

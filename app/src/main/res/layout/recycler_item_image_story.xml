@@ -2,7 +2,7 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recycler_pet_card"
+    android:id="@+id/recycler_item_image_story_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/card_margin"
@@ -17,7 +17,7 @@
         android:padding="@dimen/text_outer_padding">
 
         <ImageView
-            android:id="@+id/recycler_pet_item_image"
+            android:id="@+id/recycler_item_image_story_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
@@ -34,7 +34,7 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/recycler_pet_item_name"
+                android:id="@+id/recycler_item_image_story_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/text_divider_padding"
@@ -43,7 +43,7 @@
                 android:textSize="@dimen/text_medium" />
 
             <TextView
-                android:id="@+id/recycler_pet_item_first_category"
+                android:id="@+id/recycler_item_image_story_first_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/recycler_forms_content"

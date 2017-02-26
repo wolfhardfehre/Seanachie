@@ -15,7 +15,7 @@ public interface ImageStoriesContract {
 
         void loadForms(List<Form> forms);
 
-        void loadPets(List<ImageStory> imageStories);
+        void loadImageStories(List<ImageStory> imageStories);
 
         void noData();
 
@@ -26,7 +26,7 @@ public interface ImageStoriesContract {
 
     interface Presenter extends BasePresenter {
 
-        void addPet();
+        void addImageStory();
 
         void itemMoved(List<ImageStory> imageStories);
 

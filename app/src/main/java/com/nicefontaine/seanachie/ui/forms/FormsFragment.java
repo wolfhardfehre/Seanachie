@@ -122,16 +122,6 @@ public class FormsFragment extends Fragment implements
     }
 
     @Override
-    public void intercept() {
-
-    }
-
-    @Override
-    public void release() {
-
-    }
-
-    @Override
     public void loadForms(List<Form> forms) {
         this.forms = forms;
     }

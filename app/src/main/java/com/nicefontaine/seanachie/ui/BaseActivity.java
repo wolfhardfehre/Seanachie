@@ -16,6 +16,7 @@
 
 package com.nicefontaine.seanachie.ui;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -52,18 +53,22 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
+
+import static com.nicefontaine.seanachie.ui.image_story_create.ImageStoryCreatePresenter.REQUEST_SPEECH_TO_TEXT;
+
 
 public class BaseActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         FormPickerDialogFragment.OnFormSelectedListener {
 
-    private static final String SELECTED_FRAGMENT = "selected_fragment";
+    private static final String SELECTED_FRAGMENT_ID = "selected_fragment_id";
 
     public static final int NAVIGATION_CATEGORY = R.id.navigation_categories;
     public static final int NAVIGATION_FORMS = R.id.navigation_forms;
     public static final int NAVIGATION_NEW_FROM = R.string.navigation_form_create;
     public static final int NAVIGATION_IMAGE_STORIES = R.id.navigation_pets;
-    public static final int NAVIGATION_NEW_IMAGE_STORIES = R.string.navigation_pet_create;
+    public static final int NAVIGATION_NEW_IMAGE_STORIES = R.string.navigation_image_story_create;
     public static final int NAVIGATION_ABOUT = R.id.navigation_about;
 
     @Inject protected FormsRepository formsRepository;
@@ -74,7 +79,9 @@ public class BaseActivity extends AppCompatActivity implements
     @BindView(R.id.a_base_navigation_view) protected NavigationView navigator;
 
     private FragmentManager fragmentManager;
-    private int selectedFragment = NAVIGATION_IMAGE_STORIES;
+    private int selectedFragmentId = NAVIGATION_IMAGE_STORIES;
+    private Form selectedForm;
+    private Fragment baseFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,20 +112,29 @@ public class BaseActivity extends AppCompatActivity implements
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        selectedFragment = savedInstanceState.getInt(SELECTED_FRAGMENT);
+        selectedFragmentId = savedInstanceState.getInt(SELECTED_FRAGMENT_ID);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(SELECTED_FRAGMENT, selectedFragment);
+        outState.putInt(SELECTED_FRAGMENT_ID, selectedFragmentId);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        changeContent(selectedFragment);
+        fragmentManager.popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        changeContent(selectedFragmentId);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == REQUEST_SPEECH_TO_TEXT) {
+            baseFragment.onActivityResult(requestCode, resultCode, intent);
+        }
     }
 
     @Override
@@ -140,22 +156,20 @@ public class BaseActivity extends AppCompatActivity implements
     public void changeContent(int item) {
         switch (item) {
             case NAVIGATION_FORMS:
-                setupFormsFragment();
-                break;
+                setupFormsFragment(); break;
             case NAVIGATION_NEW_FROM:
-                setupFormCreateFragment();
-                break;
+                setupFormCreateFragment(); break;
             case NAVIGATION_IMAGE_STORIES:
-                setupPetsFragment();
-                break;
+                setupImageStoriesFragment(); break;
+            case NAVIGATION_NEW_IMAGE_STORIES:
+                setupImageStoryCreateFragment(); break;
             case NAVIGATION_CATEGORY:
-                setupCategoryFragment();
-                break;
+                setupCategoryFragment(); break;
             case NAVIGATION_ABOUT:
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
-        selectedFragment = item;
+        selectedFragmentId = item;
     }
 
     private void setupFormCreateFragment() {
@@ -164,9 +178,9 @@ public class BaseActivity extends AppCompatActivity implements
         replaceContainerFragment(formCreateFragment);
     }
 
-    private void setupPetCreateFragment(Form form) {
+    private void setupImageStoryCreateFragment() {
         ImageStoryCreateFragment imageStoryCreateFragment = ImageStoryCreateFragment.newInstance();
-        new ImageStoryCreatePresenter(form, imageStoriesRepository, imageStoryCreateFragment);
+        new ImageStoryCreatePresenter(selectedForm, imageStoriesRepository, imageStoryCreateFragment);
         replaceContainerFragment(imageStoryCreateFragment);
     }
 
@@ -176,7 +190,7 @@ public class BaseActivity extends AppCompatActivity implements
         replaceContainerFragment(formsFragment);
     }
 
-    private void setupPetsFragment() {
+    private void setupImageStoriesFragment() {
         ImageStoriesFragment imageStoriesFragment = ImageStoriesFragment.newInstance();
         new ImageStoriesPresenter(imageStoriesRepository, formsRepository, imageStoriesFragment);
         replaceContainerFragment(imageStoriesFragment);
@@ -189,6 +203,7 @@ public class BaseActivity extends AppCompatActivity implements
     }
 
     private void replaceContainerFragment(Fragment baseFragment) {
+        this.baseFragment = baseFragment;
         FragmentTransaction transaction = fragmentManager.beginTransaction()
                 .replace(R.id.a_base_content, baseFragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -198,6 +213,7 @@ public class BaseActivity extends AppCompatActivity implements
 
     @Override
     public void onFormSelected(Form form) {
-        setupPetCreateFragment(form);
+        this.selectedForm = form;
+        changeContent(NAVIGATION_NEW_IMAGE_STORIES);
     }
 }

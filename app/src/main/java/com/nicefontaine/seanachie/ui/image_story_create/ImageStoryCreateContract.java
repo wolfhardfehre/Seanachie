@@ -17,13 +17,19 @@
 package com.nicefontaine.seanachie.ui.image_story_create;
 
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+
 import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.ui.BasePresenter;
 import com.nicefontaine.seanachie.ui.BaseView;
 
+import java.io.IOException;
 
-public interface ImageStoryCreateContract {
+
+interface ImageStoryCreateContract {
 
     interface View extends BaseView<Presenter> {
 
@@ -35,11 +41,25 @@ public interface ImageStoryCreateContract {
 
         void updateRecycler();
 
+        void setStory(String story);
+
+        void setPhoto(Bitmap bitmap);
+
+        void loadImagePath(String path);
+
         void finish();
     }
 
     interface Presenter extends BasePresenter {
 
         void createImageStory(ImageStory imageStory);
+
+        void camera(Activity activity) throws IOException;
+
+        void story(Activity activity);
+
+        void displayPhoto(String path, int width);
+
+        void result(int requestCode, int resultCode, Intent intent);
     }
 }

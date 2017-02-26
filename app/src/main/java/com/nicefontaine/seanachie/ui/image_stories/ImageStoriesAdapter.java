@@ -40,7 +40,7 @@ class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.PetHo
 
     @Override
     public ImageStoriesAdapter.PetHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.recycler_item_pet, parent, false);
+        View view = inflater.inflate(R.layout.recycler_item_image_story, parent, false);
         return new ImageStoriesAdapter.PetHolder(view);
     }
 
@@ -76,9 +76,9 @@ class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.PetHo
 
         PetHolder(View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.recycler_pet_item_image);
-            name = (TextView) itemView.findViewById(R.id.recycler_pet_item_name);
-            category = (TextView) itemView.findViewById(R.id.recycler_pet_item_first_category);
+            image = (ImageView) itemView.findViewById(R.id.recycler_item_image_story_image);
+            name = (TextView) itemView.findViewById(R.id.recycler_item_image_story_name);
+            category = (TextView) itemView.findViewById(R.id.recycler_item_image_story_first_category);
         }
     }
 }
