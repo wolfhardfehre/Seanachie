@@ -69,6 +69,11 @@ public class ImageStoriesRepository implements ImageStoryDataSource {
     }
 
     @Override
+    public void getCount(@NonNull LoadCountCallback callback) {
+        imageStoriesLocalDataSource.getCount(callback);
+    }
+
+    @Override
     public void swapImageStory(@NonNull List<ImageStory> imageStories) {
         imageStoriesLocalDataSource.swapImageStory(imageStories);
     }

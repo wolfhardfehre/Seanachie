@@ -41,6 +41,11 @@ public interface ImageStoryDataSource {
         void onNoImageStory();
     }
 
+    interface LoadCountCallback {
+
+        void onCount(int count);
+    }
+
     void getImageStories(@NonNull LoadImageStoriesCallback callback);
 
     void getImageStory(@NonNull Integer Integer, @NonNull LoadImageStoryCallback callback);
@@ -50,6 +55,8 @@ public interface ImageStoryDataSource {
     void editImageStory(@NonNull ImageStory imageStory);
 
     void deleteImageStory(@NonNull Integer petId);
+
+    void getCount(@NonNull LoadCountCallback callback);
 
     void swapImageStory(@NonNull List<ImageStory> imageStories);
 }

@@ -34,22 +34,16 @@ public class Form extends BaseEntry {
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     private ArrayList<Category> categories;
 
-    private String imagePath;
-
     public Form() {
         // ORMLite needs a no-arg constructor
         super(-1);
         this.species = "Form";
     }
 
-    public Form(String species) {
-        super(-1);
+    public Form(int position, String species) {
+        super(position);
         this.species = species;
-    }
-
-    public Form position(int position) {
-        super.position = position;
-        return this;
+        this.categories = new ArrayList<>();
     }
 
     public Form categories(List<Category> categories) {
@@ -57,8 +51,10 @@ public class Form extends BaseEntry {
         return this;
     }
 
-    public Form image(String path) {
-        this.imagePath = path;
+    public Form categories(List<Category> categories, String name, String story) {
+        this.categories.add(new Category(0, name));
+        this.categories.addAll(categories);
+        this.categories.add(new Category(this.categories.size(), story));
         return this;
     }
 
@@ -72,13 +68,5 @@ public class Form extends BaseEntry {
 
     public int getCount() {
         return categories.size();
-    }
-
-    public boolean isEmpty() {
-        return position == -1;
-    }
-
-    public String getImagePath() {
-        return imagePath;
     }
 }

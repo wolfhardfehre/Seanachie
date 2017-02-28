@@ -26,6 +26,7 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.data.models.Form;
+import com.nicefontaine.seanachie.data.models.ImageStory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -91,7 +92,7 @@ public final class Session {
         cache.put(key, value);
     }
 
-    public void set(final int key, final Form value) {
+    public void set(final int key, final ImageStory value) {
         cache.put(key, value);
     }
 
@@ -120,7 +121,7 @@ public final class Session {
         persistentData.store(key, value);
     }
 
-    public void store(final int key, final Form value) {
+    public void store(final int key, final ImageStory value) {
         set(key, value);
         String json = gson.toJson(value);
         persistentData.store(key, json);
@@ -185,14 +186,14 @@ public final class Session {
         }
     }
 
-    public Form get(final int key, final Form defaultValue) {
+    public ImageStory get(final int key, final ImageStory defaultValue) {
         Object value = cache.get(key);
         if (value == null) {
             String json = gson.toJson(defaultValue);
             json = persistentData.restore(key, json);
-            return gson.fromJson(json, Form.class);
+            return gson.fromJson(json, ImageStory.class);
         } else {
-            return (Form) value;
+            return (ImageStory) value;
         }
     }
 

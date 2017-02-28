@@ -47,6 +47,7 @@ import butterknife.OnClick;
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.widget.LinearLayout.VERTICAL;
 import static com.nicefontaine.seanachie.ui.BaseActivity.NAVIGATION_FORMS;
+import static com.nicefontaine.seanachie.utils.Utils.isNull;
 
 
 public class FormCreateFragment extends Fragment implements
@@ -99,7 +100,9 @@ public class FormCreateFragment extends Fragment implements
 
     @OnClick(R.id.f_create_form_fab)
     public void createForm() {
-        presenter.createForm(editText.getText().toString());
+        String name = getString(R.string.story_create_name);
+        String story = getString(R.string.story_create_story);
+        presenter.createForm(editText.getText().toString(), name, story);
     }
 
     @Override
@@ -135,7 +138,7 @@ public class FormCreateFragment extends Fragment implements
 
     @Override
     public void initRecycler() {
-        if (categories == null) categories = new ArrayList<>();
+        if (isNull(categories)) categories = new ArrayList<>();
         this.adapter = new CategoriesAdapter(context, categories);
         recycler.setLayoutManager(new LinearLayoutManager(context, VERTICAL, false));
         recycler.setAdapter(adapter);

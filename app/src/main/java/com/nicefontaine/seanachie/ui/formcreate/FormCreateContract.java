@@ -42,7 +42,7 @@ public interface FormCreateContract {
 
     interface Presenter extends BasePresenter {
 
-        void createForm(String title);
+        void createForm(String title, String name, String story);
 
         void itemMoved(List<Category> categories);
 

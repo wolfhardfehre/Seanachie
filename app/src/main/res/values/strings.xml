@@ -2,6 +2,7 @@
 
     <string name="app_name">Seanachie</string>
     <string name="no_text">kein Text</string>
+    <string name="no_data">keine Daten</string>
 
     <!-- drawer -->
     <string name="navigation_forms">Formulare</string>
@@ -19,17 +20,20 @@
     <string name="recycler_forms_categories">Kategorien</string>
 
     <!-- create category dialog -->
-    <string name="dialog_category_create_title">Kategorie anlegen</string>
-    <string name="dialog_category_create_save">Speichern</string>
-    <string name="dialog_category_create_cancel">Abbrechen</string>
-    <string name="dialog_category_create_hint">Name der Kategorie</string>
+    <string name="category_create_title">Kategorie anlegen</string>
+    <string name="category_create_save">Speichern</string>
+    <string name="category_create_cancel">Abbrechen</string>
+    <string name="category_create_hint">Name der Kategorie</string>
 
     <!-- imageStory create recycler -->
     <string name="recycler_image_story_create_category">Kategorie</string>
     <string name="recycler_image_story_create_category_hint">editieren</string>
 
     <!-- imageStory create fragment -->
-    <string name="fragment_image_story_create_name">Name</string>
-    <string name="fragment_image_story_create_story">Geschichte</string>
+    <string name="story_create_name">Name</string>
+    <string name="story_create_story">Geschichte</string>
+    <string name="story_create_no_name">Name wird benötigt</string>
+    <string name="story_create_no_story">Geschichte wird benötigt</string>
+    <string name="story_create_speech_to_text">Jetzt sprechen</string>
 
 </resources>

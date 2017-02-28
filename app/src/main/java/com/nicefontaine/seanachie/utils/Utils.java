@@ -17,12 +17,23 @@
 package com.nicefontaine.seanachie.utils;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 
 public class Utils {
+
     private Utils() {}
+
+    public static boolean isNull(Object object) {
+        return object == null;
+    }
 
     public static <T> List<T> rightShift(List<T> list, int from, int to) {
         for (int i = from; i < to; i++) {

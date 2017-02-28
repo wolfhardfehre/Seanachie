@@ -39,7 +39,7 @@ public class ImageStoryCreateAdapter extends RecyclerView.Adapter<ImageStoryCrea
     private List<Category> categories;
 
     public interface OnImageClickedListener {
-        void onImageClicked(ImageStoryCreateAdapter.CategoryHolder holder, int position);
+        void onImageClicked(int position);
     }
 
     public ImageStoryCreateAdapter(ImageStoryCreateFragment imageStoryCreateFragment, Context context, List<Category> categories) {
@@ -68,7 +68,7 @@ public class ImageStoryCreateAdapter extends RecyclerView.Adapter<ImageStoryCrea
         holder.key.setText(category.getKey());
         String value = category.getValue();
         if (value != null) holder.value.setText(value);
-        holder.image.setOnClickListener(v -> callback.onImageClicked(holder, position));
+        holder.image.setOnClickListener(v -> callback.onImageClicked(position));
     }
 
     @Override
