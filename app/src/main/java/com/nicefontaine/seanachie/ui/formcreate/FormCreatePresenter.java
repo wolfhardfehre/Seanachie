@@ -85,9 +85,9 @@ public class FormCreatePresenter implements
     }
 
     @Override
-    public void createForm(String title) {
-        Form form = new Form(title).categories(categories)
-                .position(forms.size() + 1);
+    public void createForm(String title, String name, String story) {
+        Form form = new Form(forms.size() + 1, title)
+                .categories(categories, name, story);
         formsRepository.createForm(form);
         view.finish();
     }

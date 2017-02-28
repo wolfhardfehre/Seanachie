@@ -49,32 +49,41 @@ public class ImageStory extends BaseEntry {
         return imagePath;
     }
 
-    public void setImagePath(String imagePath) {
+    public ImageStory position(int position) {
+        this.position = position;
+        return this;
+    }
+
+    public ImageStory image(String imagePath) {
         this.imagePath = imagePath;
+        return this;
+    }
+
+    public ImageStory form(Form form) {
+        this.form = form;
+        return this;
+    }
+
+    public ImageStory name(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public ImageStory story(String story) {
+        this.story = story;
+        return this;
     }
 
     public Form getForm() {
         return form;
     }
 
-    public void setForm(Form form) {
-        this.form = form;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getStory() {
         return story;
-    }
-
-    public void setStory(String story) {
-        this.story = story;
     }
 
     public String getFirst() {
@@ -83,5 +92,9 @@ public class ImageStory extends BaseEntry {
             return String.format("%s: %s", category.getKey(), category.getValue());
         }
         return "...";
+    }
+
+    public boolean isEmpty() {
+        return position == -1;
     }
 }

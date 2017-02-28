@@ -20,19 +20,19 @@ package com.nicefontaine.seanachie.ui.image_story_create;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
+import android.util.Log;
 
 import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.data.sources.image_stories.ImageStoriesRepository;
+import com.nicefontaine.seanachie.data.sources.image_stories.ImageStoryDataSource;
+import com.nicefontaine.seanachie.utils.ImageUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,14 +45,18 @@ import timber.log.Timber;
 
 import static android.app.Activity.RESULT_OK;
 import static android.os.Environment.getExternalStoragePublicDirectory;
+import static com.nicefontaine.seanachie.utils.Utils.isNull;
 
 
 public class ImageStoryCreatePresenter implements
-        ImageStoryCreateContract.Presenter {
+        ImageStoryCreateContract.Presenter,
+        ImageStoryDataSource.LoadCountCallback {
 
-
+    private static final String REPOSITORY = "com.nicefontaine.seanachie.fileprovider";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+
     public static final int REQUEST_SPEECH_TO_TEXT = 2;
+
     private final ImageStoryCreateContract.View view;
     private final ImageStoriesRepository imageStoriesRepository;
     private Form form;
@@ -74,8 +78,7 @@ public class ImageStoryCreatePresenter implements
 
     @Override
     public void onResume() {
-        view.loadForm(form);
-        view.initRecycler();
+        imageStoriesRepository.getCount(this);
     }
 
     @Override
@@ -89,8 +92,7 @@ public class ImageStoryCreatePresenter implements
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
             File photoFile = createImageFile();
-            Uri photoURI = FileProvider.getUriForFile(activity,
-                    "com.nicefontaine.seanachie.fileprovider", photoFile);
+            Uri photoURI = FileProvider.getUriForFile(activity, REPOSITORY, photoFile);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             activity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         }
@@ -111,29 +113,26 @@ public class ImageStoryCreatePresenter implements
     }
 
     @Override
-    public void story(Activity activity) {
-        Intent intent = getSpeechIntent();
+    public void story(Activity activity, String text) {
+        Intent intent = getSpeechIntent(text);
         activity.startActivityForResult(intent, REQUEST_SPEECH_TO_TEXT);
     }
 
-    private Intent getSpeechIntent() {
+    private Intent getSpeechIntent(String text) {
         return new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
                 .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                         RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
                 .putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
-                .putExtra(RecognizerIntent.EXTRA_PROMPT, "Sag was!");
+                .putExtra(RecognizerIntent.EXTRA_PROMPT, text);
     }
 
     @Override
     public void result(int requestCode, int resultCode, Intent intent) {
-        switch (requestCode) {
-            case REQUEST_SPEECH_TO_TEXT:
-                if (okNotNull(resultCode, intent)) setStory(intent); break;
-        }
+        if (okNotNull(requestCode, resultCode, intent)) setStory(intent);
     }
 
-    private boolean okNotNull(int resultCode, Intent intent) {
-        return resultCode == RESULT_OK && intent != null;
+    private boolean okNotNull(int requestCode, int resultCode, Intent intent) {
+        return requestCode == REQUEST_SPEECH_TO_TEXT && resultCode == RESULT_OK && !isNull(intent);
     }
 
     private void setStory(Intent intent) {
@@ -151,47 +150,17 @@ public class ImageStoryCreatePresenter implements
     }
 
     private void setBitmap(String path, int width) throws IOException {
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions = computeOptions(path, width, bmOptions);
-        Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
-        float angle = getRotationAngle(path);
-        view.setPhoto(rotateImage(bitmap, angle));
+        Bitmap bitmap = ImageUtils.loadImage(path, width);
+        bitmap = ImageUtils.rotateImage(bitmap, path);
+        view.setPhoto(bitmap);
     }
 
-    private BitmapFactory.Options computeOptions(String path, int width, BitmapFactory.Options bmOptions) {
-        int imageWidth = getImageWidth(path, bmOptions);
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = imageWidth / width;
-        bmOptions.inPurgeable = true;
-        return bmOptions;
-    }
-
-    private int getImageWidth(String path, BitmapFactory.Options bmOptions) {
-        bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, bmOptions);
-        return bmOptions.outWidth;
-    }
-
-    private float getRotationAngle(String path) throws IOException {
-        ExifInterface exifInterface = new ExifInterface(path);
-        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED);
-        switch(orientation) {
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                return 90;
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                return 180;
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                return 270;
-            default:
-                return 0;
-        }
-    }
-
-    private Bitmap rotateImage(Bitmap source, float angle) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
-                matrix, true);
+    @Override
+    public void onCount(int count) {
+        ImageStory imageStory = new ImageStory()
+                .position(count)
+                .form(form);
+        view.loadImageStory(imageStory);
+        view.initRecycler();
     }
 }

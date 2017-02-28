@@ -31,14 +31,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
 import com.nicefontaine.seanachie.data.Session;
 import com.nicefontaine.seanachie.data.models.Category;
-import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.ui.BaseActivity;
 
@@ -66,9 +64,8 @@ public class ImageStoryCreateFragment extends Fragment implements
     private List<Category> categories;
     private ImageStoryCreateAdapter adapter;
     private ImageStoryCreateContract.Presenter presenter;
-    private EditText currentValue;
     private int currentPosition;
-    private Form currentForm;
+    private ImageStory currentStory;
 
     @Inject protected Session session;
 
@@ -130,33 +127,30 @@ public class ImageStoryCreateFragment extends Fragment implements
     }
 
     @OnClick(R.id.f_image_story_create_fab)
-    public void createPet() {
-        ImageStory imageStory = new ImageStory();
-        imageStory.setName("Rolf");
-        imageStory.setStory("yeah!");
-        presenter.createImageStory(imageStory);
-    }
-
-    @Override
-    public void loadForm(Form form) {
-        Form cached = session.get(R.string.pref_cached_form, new Form());
-        if (cached.isEmpty()) {
-            this.categories = new ArrayList<>();
-            this.categories.add(new Category(0, getString(R.string.fragment_image_story_create_name)));
-            this.categories.addAll(form.getCategories());
-            this.categories.add(new Category(categories.size(), getString(R.string.fragment_image_story_create_story)));
-            currentForm = form;
+    public void createImageStory() {
+        String name = categories.get(0).getValue();
+        String story = categories.get(categories.size() - 1).getValue();
+        if (name == null) {
+            Snackbar.make(coordinator, R.string.story_create_no_name, LENGTH_LONG).show();
+        } else if (story == null) {
+            Snackbar.make(coordinator, R.string.story_create_no_story, LENGTH_LONG).show();
         } else {
-            this.categories = cached.getCategories();
-            String path = cached.getImagePath();
-            if (path != null) presenter.displayPhoto(path, 300);
-            currentForm = cached;
+            presenter.createImageStory(currentStory);
         }
     }
 
     @Override
+    public void loadImageStory(ImageStory imageStory) {
+        ImageStory cached = session.get(R.string.pref_cached_image_story, new ImageStory());
+        currentStory = cached.isEmpty() ? imageStory : cached;
+        categories = currentStory.getForm().getCategories();
+        String path = currentStory.getImagePath();
+        if (path != null) presenter.displayPhoto(path, 300);
+    }
+
+    @Override
     public void noData() {
-        Snackbar.make(coordinator, "No data", LENGTH_LONG).show();
+        Snackbar.make(coordinator, R.string.no_data, LENGTH_LONG).show();
     }
 
     @Override
@@ -176,7 +170,6 @@ public class ImageStoryCreateFragment extends Fragment implements
     @Override
     public void setStory(String story) {
         categories.get(currentPosition).setValue(story);
-        currentForm.categories(categories);
         cache();
     }
 
@@ -187,12 +180,13 @@ public class ImageStoryCreateFragment extends Fragment implements
 
     @Override
     public void loadImagePath(String path) {
-        currentForm.image(path);
+        currentStory.image(path);
         cache();
     }
 
     private void cache() {
-        session.store(R.string.pref_cached_form, currentForm);
+        currentStory.getForm().categories(categories);
+        session.store(R.string.pref_cached_image_story, currentStory);
     }
 
     @Override
@@ -206,9 +200,8 @@ public class ImageStoryCreateFragment extends Fragment implements
     }
 
     @Override
-    public void onImageClicked(ImageStoryCreateAdapter.CategoryHolder holder, int position) {
-        presenter.story(getActivity());
-        this.currentValue = holder.value;
+    public void onImageClicked(int position) {
+        presenter.story(getActivity(), getString(R.string.story_create_speech_to_text));
         this.currentPosition = position;
     }
 }

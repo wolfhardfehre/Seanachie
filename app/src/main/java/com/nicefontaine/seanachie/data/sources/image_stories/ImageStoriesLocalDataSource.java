@@ -85,6 +85,11 @@ public class ImageStoriesLocalDataSource implements ImageStoryDataSource {
     }
 
     @Override
+    public void getCount(@NonNull LoadCountCallback callback) {
+        callback.onCount((int) imageStoryDao.countOf());
+    }
+
+    @Override
     public void swapImageStory(@NonNull List<ImageStory> imageStories) {
         imageStoryDao.delete(imageStories);
         imageStoryDao.callBatchTasks(new Callable<Void>() {

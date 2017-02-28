@@ -108,7 +108,7 @@ public class ImageStoriesFragment extends Fragment implements
 
     @OnClick(R.id.f_base_fab)
     public void addImageStory() {
-        session.removeSetting(R.string.pref_cached_form);
+        session.removeSetting(R.string.pref_cached_image_story);
         presenter.addImageStory();
     }
 

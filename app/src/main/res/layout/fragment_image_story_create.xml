@@ -5,8 +5,8 @@
     android:id="@+id/f_image_story_create_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="@android:color/background_light">
+    android:background="@android:color/background_light"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -18,11 +18,11 @@
             android:id="@+id/collapsing"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:contentScrim="?attr/colorPrimary"
-            app:statusBarScrim="@android:color/transparent"
+            app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
-            app:expandedTitleMarginEnd="64dp">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:statusBarScrim="@android:color/transparent">
 
             <ImageView
                 android:id="@+id/f_image_story_create_backdrop"
@@ -37,14 +37,16 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:layout_collapseMode="pin" />
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedscrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="?attr/actionBarSize"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -84,9 +86,10 @@
         android:id="@+id/f_image_story_create_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:fabSize="normal"
+        app:layout_anchor="@id/collapsing"
+        app:layout_anchorGravity="bottom|right|end"
         app:srcCompat="@drawable/ic_save_white_48dp" />
 
 </android.support.design.widget.CoordinatorLayout>

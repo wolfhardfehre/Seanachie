@@ -77,10 +77,10 @@ public class CreateCategoryFragmentDialog extends DialogFragment implements
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         @SuppressLint("InflateParams")
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
-                .setTitle(R.string.dialog_category_create_title)
+                .setTitle(R.string.category_create_title)
                 .setView(getActivity().getLayoutInflater().inflate(R.layout.fragment_category_create, null))
-                .setNegativeButton(R.string.dialog_category_create_cancel, (dialog, id) -> dismiss())
-                .setPositiveButton(R.string.dialog_category_create_save, (dialog, id) -> {
+                .setNegativeButton(R.string.category_create_cancel, (dialog, id) -> dismiss())
+                .setPositiveButton(R.string.category_create_save, (dialog, id) -> {
                     editText = (EditText) getDialog().findViewById(R.id.f_create_category_edittext);
                     categoriesRepository.getCategories(this);
                 });

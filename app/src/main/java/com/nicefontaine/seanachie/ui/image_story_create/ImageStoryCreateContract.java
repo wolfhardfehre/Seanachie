@@ -33,7 +33,7 @@ interface ImageStoryCreateContract {
 
     interface View extends BaseView<Presenter> {
 
-        void loadForm(Form form);
+        void loadImageStory(ImageStory imageStory);
 
         void noData();
 
@@ -56,7 +56,7 @@ interface ImageStoryCreateContract {
 
         void camera(Activity activity) throws IOException;
 
-        void story(Activity activity);
+        void story(Activity activity, String text);
 
         void displayPhoto(String path, int width);
 

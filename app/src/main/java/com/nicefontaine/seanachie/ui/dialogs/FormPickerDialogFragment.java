@@ -56,7 +56,7 @@ public class FormPickerDialogFragment extends DialogFragment {
                 .setTitle(text)
                 .setAdapter(adapter,
                         (dialog, position) -> mCallback.onFormSelected(forms.get(position)))
-                .setNegativeButton(R.string.dialog_category_create_cancel,
+                .setNegativeButton(R.string.category_create_cancel,
                         (dialog, id) -> dismiss());
         return builder.create();
     }

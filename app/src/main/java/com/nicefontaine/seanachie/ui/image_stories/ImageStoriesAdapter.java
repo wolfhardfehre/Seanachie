@@ -2,6 +2,9 @@ package com.nicefontaine.seanachie.ui.image_stories;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +15,12 @@ import android.widget.TextView;
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.ui.ItemTouchCallback;
+import com.nicefontaine.seanachie.utils.ImageUtils;
 
+import java.io.IOException;
 import java.util.List;
 
+import static com.nicefontaine.seanachie.utils.Utils.isNull;
 import static com.nicefontaine.seanachie.utils.Utils.leftShift;
 import static com.nicefontaine.seanachie.utils.Utils.rightShift;
 
@@ -47,7 +53,16 @@ class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.PetHo
     @Override
     public void onBindViewHolder(ImageStoriesAdapter.PetHolder holder, int position) {
         final ImageStory imageStory = imageStories.get(position);
-        // TODO fetch image to holder.image
+        String path = imageStory.getImagePath();
+        if (!isNull(path)) {
+            Bitmap bitmap = ImageUtils.loadImage(path, 100);
+            try {
+                bitmap = ImageUtils.rotateImage(bitmap, path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            holder.image.setImageBitmap(bitmap);
+        }
         holder.name.setText(imageStory.getName());
         holder.category.setText(imageStory.getFirst());
     }
