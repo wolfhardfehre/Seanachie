@@ -1,8 +1,11 @@
 <resources>
 
+    <!-- commons -->
     <string name="app_name">Seanachie</string>
     <string name="no_text">kein Text</string>
     <string name="no_data">keine Daten</string>
+    <string name="elements_reordered">Kategorien umsortiert</string>
+    <string name="elements_deleted">Kategorie gelöscht</string>
 
     <!-- drawer -->
     <string name="navigation_forms">Formulare</string>

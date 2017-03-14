@@ -27,6 +27,8 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.nicefontaine.seanachie.R;
@@ -64,9 +66,17 @@ public class CreateCategoryFragmentDialog extends DialogFragment implements
         this.context = context;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getDialog().getWindow()
+                .setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+    }
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         ((SeanachieApp) context.getApplicationContext()).getAppComponent().inject(this);
         return view;
@@ -78,7 +88,9 @@ public class CreateCategoryFragmentDialog extends DialogFragment implements
         @SuppressLint("InflateParams")
         AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setTitle(R.string.category_create_title)
-                .setView(getActivity().getLayoutInflater().inflate(R.layout.fragment_category_create, null))
+                .setView(getActivity()
+                        .getLayoutInflater()
+                        .inflate(R.layout.fragment_category_create, null))
                 .setNegativeButton(R.string.category_create_cancel, (dialog, id) -> dismiss())
                 .setPositiveButton(R.string.category_create_save, (dialog, id) -> {
                     editText = (EditText) getDialog().findViewById(R.id.f_create_category_edittext);

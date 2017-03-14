@@ -19,9 +19,11 @@ package com.nicefontaine.seanachie.ui.image_story_create;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,19 +34,25 @@ import com.nicefontaine.seanachie.data.models.Category;
 import java.util.List;
 
 
-public class ImageStoryCreateAdapter extends RecyclerView.Adapter<ImageStoryCreateAdapter.CategoryHolder> {
+class ImageStoryCreateAdapter extends
+        RecyclerView.Adapter<ImageStoryCreateAdapter.CategoryHolder> {
 
     private final OnImageClickedListener callback;
+    private final Context context;
     private LayoutInflater inflater;
     private List<Category> categories;
 
-    public interface OnImageClickedListener {
-        void onImageClicked(int position);
+    interface OnImageClickedListener {
+
+        void onEditText(int position, String text);
+
+        void onSpeechToText(int position);
     }
 
-    public ImageStoryCreateAdapter(ImageStoryCreateFragment imageStoryCreateFragment, Context context, List<Category> categories) {
+    ImageStoryCreateAdapter(ImageStoryCreateFragment imageStoryCreateFragment, Context context, List<Category> categories) {
         this.inflater = LayoutInflater.from(context);
         this.callback = imageStoryCreateFragment;
+        this.context = context;
         setCategories(categories);
     }
 
@@ -68,7 +76,13 @@ public class ImageStoryCreateAdapter extends RecyclerView.Adapter<ImageStoryCrea
         holder.key.setText(category.getKey());
         String value = category.getValue();
         if (value != null) holder.value.setText(value);
-        holder.image.setOnClickListener(v -> callback.onImageClicked(position));
+        holder.value.setOnFocusChangeListener((v, hasFocus) -> {
+            String text = holder.value.getText().toString();
+            callback.onEditText(position, text);
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        });
+        holder.image.setOnClickListener(v -> callback.onSpeechToText(position));
     }
 
     @Override
@@ -76,12 +90,12 @@ public class ImageStoryCreateAdapter extends RecyclerView.Adapter<ImageStoryCrea
         return categories.size();
     }
 
-    public class CategoryHolder extends RecyclerView.ViewHolder {
+    class CategoryHolder extends RecyclerView.ViewHolder {
         private final ImageView image;
         private TextView key;
         public EditText value;
 
-        public CategoryHolder(View itemView) {
+        CategoryHolder(View itemView) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.recycler_item_image_story_create_image);
             key = (TextView) itemView.findViewById(R.id.recycler_item_image_story_create_key);

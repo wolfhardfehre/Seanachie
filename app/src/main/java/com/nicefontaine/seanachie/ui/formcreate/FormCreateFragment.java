@@ -28,6 +28,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.nicefontaine.seanachie.R;
@@ -96,6 +97,17 @@ public class FormCreateFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         presenter.onResume();
+        initEditText();
+    }
+
+    private void initEditText() {
+        editText.requestFocus();
+        InputMethodManager imm = (InputMethodManager)
+                context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        });
     }
 
     @OnClick(R.id.f_create_form_fab)
@@ -109,7 +121,7 @@ public class FormCreateFragment extends Fragment implements
     public void onItemMove(int fromPosition, int toPosition) {
         categories = adapter.getCategories();
         presenter.itemMoved(categories);
-        Snackbar.make(coordinator, "Elements reordered", LENGTH_LONG).show();
+        Snackbar.make(coordinator, R.string.elements_reordered, LENGTH_LONG).show();
     }
 
     @Override
@@ -118,7 +130,7 @@ public class FormCreateFragment extends Fragment implements
         Integer categoryId = category.getId();
         categories.remove(category);
         presenter.itemRemoved(categoryId);
-        Snackbar.make(coordinator, "Element deleted", LENGTH_LONG).show();
+        Snackbar.make(coordinator, R.string.elements_deleted, LENGTH_LONG).show();
     }
 
     @Override
@@ -133,7 +145,7 @@ public class FormCreateFragment extends Fragment implements
 
     @Override
     public void noData() {
-        Snackbar.make(coordinator, "No data", LENGTH_LONG).show();
+        Snackbar.make(coordinator, R.string.no_data, LENGTH_LONG).show();
     }
 
     @Override
