@@ -30,6 +30,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
@@ -110,7 +111,7 @@ public class CategoriesFragment extends Fragment implements
     public void onItemMove(int fromPosition, int toPosition) {
         categories = adapter.getCategories();
         presenter.itemMoved(categories);
-        Snackbar.make(coordinator, "Elements reordered", LENGTH_LONG).show();
+        Snackbar.make(coordinator, R.string.elements_reordered, LENGTH_LONG).show();
     }
 
     @Override
@@ -119,7 +120,7 @@ public class CategoriesFragment extends Fragment implements
         Integer categoryId = category.getId();
         categories.remove(category);
         presenter.itemRemoved(categoryId);
-        Snackbar.make(coordinator, "Element deleted", LENGTH_LONG).show();
+        Snackbar.make(coordinator, R.string.elements_deleted, LENGTH_LONG).show();
     }
 
     @Override
@@ -134,7 +135,7 @@ public class CategoriesFragment extends Fragment implements
 
     @Override
     public void noData() {
-        Snackbar.make(coordinator, "No data", LENGTH_LONG).show();
+        Snackbar.make(coordinator, R.string.no_data, LENGTH_LONG).show();
     }
 
     @Override

@@ -28,9 +28,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.nicefontaine.seanachie.R;
@@ -200,7 +202,13 @@ public class ImageStoryCreateFragment extends Fragment implements
     }
 
     @Override
-    public void onImageClicked(int position) {
+    public void onEditText(int position, String text) {
+        this.currentPosition = position;
+        setStory(text);
+    }
+
+    @Override
+    public void onSpeechToText(int position) {
         presenter.story(getActivity(), getString(R.string.story_create_speech_to_text));
         this.currentPosition = position;
     }

@@ -36,11 +36,11 @@ class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.PetHo
         setImageStories(imageStories);
     }
 
-    public void setImageStories(List<ImageStory> imageStories) {
+    void setImageStories(List<ImageStory> imageStories) {
         this.imageStories = imageStories;
     }
 
-    public List<ImageStory> getImageStories() {
+    List<ImageStory> getImageStories() {
         return imageStories;
     }
 
