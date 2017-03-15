@@ -63,7 +63,7 @@ class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.PetHo
             }
             holder.image.setImageBitmap(bitmap);
         }
-        holder.name.setText(imageStory.getName());
+        holder.name.setText(imageStory.getForm().getCategories().get(0).getValue());
         holder.category.setText(imageStory.getFirst());
     }
 

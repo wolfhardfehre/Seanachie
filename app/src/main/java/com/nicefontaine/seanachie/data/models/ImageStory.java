@@ -23,6 +23,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 @DatabaseTable(tableName = "image_story")
@@ -33,12 +34,6 @@ public class ImageStory extends BaseEntry {
 
     @DatabaseField(dataType = DataType.SERIALIZABLE)
     private Form form;
-
-    @DatabaseField
-    private String name;
-
-    @DatabaseField
-    private String story;
 
     public ImageStory() {
         // ORMLite needs a no-arg constructor
@@ -64,26 +59,8 @@ public class ImageStory extends BaseEntry {
         return this;
     }
 
-    public ImageStory name(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public ImageStory story(String story) {
-        this.story = story;
-        return this;
-    }
-
     public Form getForm() {
         return form;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getStory() {
-        return story;
     }
 
     public String getFirst() {
@@ -96,5 +73,16 @@ public class ImageStory extends BaseEntry {
 
     public boolean isEmpty() {
         return position == -1;
+    }
+
+    public String getCategoriesContent() {
+        StringBuilder text = new StringBuilder();
+        for (Category category : form.getCategories()) {
+            text.append(category.getKey())
+                    .append(": ")
+                    .append(category.getValue())
+                    .append("\n");
+        }
+        return text.toString();
     }
 }
