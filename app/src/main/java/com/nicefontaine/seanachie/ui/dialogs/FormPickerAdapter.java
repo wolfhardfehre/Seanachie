@@ -50,7 +50,7 @@ public class FormPickerAdapter extends ArrayAdapter<Form> {
 
     @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) convertView = inflater.inflate(resource, null);
         StoryHolder holder = new StoryHolder(convertView);
         holder.name.setText(forms.get(position).getSpecies());
