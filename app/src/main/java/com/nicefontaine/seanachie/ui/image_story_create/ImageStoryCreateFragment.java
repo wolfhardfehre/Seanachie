@@ -20,7 +20,9 @@ package com.nicefontaine.seanachie.ui.image_story_create;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -42,9 +44,11 @@ import com.nicefontaine.seanachie.data.models.Category;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.ui.BaseActivity;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 import javax.inject.Inject;
 
@@ -126,6 +130,17 @@ public class ImageStoryCreateFragment extends Fragment implements
         } catch (IOException e) {
             Timber.e(e);
         }
+    }
+
+    @OnClick(R.id.f_image_story_send_fab)
+    public void sendImageStory() {
+        Uri uri = Uri.fromFile(new File(currentStory.getImagePath()));
+        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND)
+                .setType("application/image")
+                .putExtra(android.content.Intent.EXTRA_SUBJECT, currentStory.getCategoriesContent())
+                .putExtra(android.content.Intent.EXTRA_TEXT, "... send with Seanachie")
+                .putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
     }
 
     @OnClick(R.id.f_image_story_create_fab)
