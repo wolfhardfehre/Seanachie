@@ -19,43 +19,36 @@ package com.nicefontaine.seanachie.ui.image_stories;
 
 import android.support.annotation.NonNull;
 
-import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
-import com.nicefontaine.seanachie.data.sources.forms.FormsDataSource;
-import com.nicefontaine.seanachie.data.sources.forms.FormsRepository;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 import com.nicefontaine.seanachie.data.sources.image_stories.ImageStoriesRepository;
-import com.nicefontaine.seanachie.data.sources.image_stories.ImageStoryDataSource;
 
 import java.util.List;
 
 
 public class ImageStoriesPresenter implements
         ImageStoriesContract.Presenter,
-        ImageStoryDataSource.LoadImageStoriesCallback,
-        FormsDataSource.LoadFormsCallback {
+        DataSource.LoadDataCallback<ImageStory> {
 
     private final ImageStoriesRepository imageStoriesRepository;
     private final ImageStoriesContract.View view;
-    private final FormsRepository formsRepository;
     private boolean isResumed = true;
 
     public ImageStoriesPresenter(@NonNull ImageStoriesRepository imageStoriesRepository,
-                                 @NonNull FormsRepository formsRepository,
                                  @NonNull ImageStoriesContract.View view) {
         this.imageStoriesRepository = imageStoriesRepository;
-        this.formsRepository = formsRepository;
         this.view = view;
         this.view.setPresenter(this);
     }
 
     @Override
     public void onResume() {
-        imageStoriesRepository.getImageStories(this);
+        imageStoriesRepository.getData(this);
     }
 
     @Override
     public void onRefresh() {
-        imageStoriesRepository.getImageStories(this);
+        imageStoriesRepository.getData(this);
     }
 
     @Override
@@ -64,22 +57,17 @@ public class ImageStoriesPresenter implements
     }
 
     @Override
-    public void addImageStory() {
-        formsRepository.getForms(this);
-    }
-
-    @Override
     public void itemMoved(List<ImageStory> imageStories) {
-        imageStoriesRepository.swapImageStory(imageStories);
+        imageStoriesRepository.swap(imageStories);
     }
 
     @Override
     public void itemRemoved(Integer imageStoryId) {
-        imageStoriesRepository.deleteImageStory(imageStoryId);
+        imageStoriesRepository.delete(imageStoryId);
     }
 
     @Override
-    public void onImageStoriesLoaded(List<ImageStory> imageStories) {
+    public void onDataLoaded(List<ImageStory> imageStories) {
         view.loadImageStories(imageStories);
         if (isResumed) {
             view.initRecycler();
@@ -90,7 +78,7 @@ public class ImageStoriesPresenter implements
     }
 
     @Override
-    public void onNoImageStories() {
+    public void noData() {
         view.noData();
         if (isResumed) {
             view.initRecycler();
@@ -98,15 +86,5 @@ public class ImageStoriesPresenter implements
             view.updateRecycler();
         }
         isResumed = false;
-    }
-
-    @Override
-    public void onFormsLoaded(List<Form> forms) {
-        view.loadForms(forms);
-    }
-
-    @Override
-    public void onNoForms() {
-        view.noData();
     }
 }

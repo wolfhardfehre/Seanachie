@@ -26,12 +26,11 @@ import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
-import android.util.Log;
 
 import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 import com.nicefontaine.seanachie.data.sources.image_stories.ImageStoriesRepository;
-import com.nicefontaine.seanachie.data.sources.image_stories.ImageStoryDataSource;
 import com.nicefontaine.seanachie.utils.ImageUtils;
 
 import java.io.File;
@@ -50,11 +49,10 @@ import static com.nicefontaine.seanachie.utils.Utils.isNull;
 
 public class ImageStoryCreatePresenter implements
         ImageStoryCreateContract.Presenter,
-        ImageStoryDataSource.LoadCountCallback {
+        DataSource.LoadCountCallback {
 
     private static final String REPOSITORY = "com.nicefontaine.seanachie.fileprovider";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
-
     public static final int REQUEST_SPEECH_TO_TEXT = 2;
 
     private final ImageStoryCreateContract.View view;
@@ -72,13 +70,13 @@ public class ImageStoryCreatePresenter implements
 
     @Override
     public void createImageStory(ImageStory imageStory) {
-        imageStoriesRepository.createImageStory(imageStory);
+        imageStoriesRepository.create(imageStory);
         view.finish();
     }
 
     @Override
     public void onResume() {
-        imageStoriesRepository.getCount(this);
+        imageStoriesRepository.count(this);
     }
 
     @Override
@@ -161,9 +159,9 @@ public class ImageStoryCreatePresenter implements
     }
 
     @Override
-    public void onCount(int count) {
+    public void onCount(long count) {
         ImageStory imageStory = new ImageStory()
-                .position(count)
+                .position((int) count)
                 .form(form);
         view.loadImageStory(imageStory);
         view.initRecycler();

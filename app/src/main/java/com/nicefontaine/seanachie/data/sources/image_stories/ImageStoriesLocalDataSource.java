@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.nicefontaine.seanachie.data.DatabaseHelper;
 import com.nicefontaine.seanachie.data.models.ImageStory;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -30,7 +31,7 @@ import java.util.concurrent.Callable;
 import static dagger.internal.Preconditions.checkNotNull;
 
 
-public class ImageStoriesLocalDataSource implements ImageStoryDataSource {
+public class ImageStoriesLocalDataSource implements DataSource<ImageStory> {
 
     private static ImageStoriesLocalDataSource instance;
     private RuntimeExceptionDao<ImageStory, Integer> imageStoryDao;
@@ -49,48 +50,43 @@ public class ImageStoriesLocalDataSource implements ImageStoryDataSource {
     }
 
     @Override
-    public void getImageStories(@NonNull LoadImageStoriesCallback callback) {
+    public void getData(@NonNull LoadDataCallback<ImageStory> callback) {
         List<ImageStory> imageStories = imageStoryDao.queryForAll();
         if (imageStories.isEmpty()) {
-            callback.onNoImageStories();
+            callback.noData();
         } else {
-            callback.onImageStoriesLoaded(imageStories);
+            callback.onDataLoaded(imageStories);
         }
     }
 
     @Override
-    public void getImageStory(@NonNull Integer petId, @NonNull LoadImageStoryCallback callback) {
+    public void getElement(@NonNull Integer petId, @NonNull LoadElementCallback<ImageStory> callback) {
         ImageStory imageStory = imageStoryDao.queryForId(petId);
         if (imageStory == null) {
-            callback.onNoImageStory();
+            callback.noElement();
         } else {
-            callback.onImageStoryLoaded(imageStory);
+            callback.onElementLoaded(imageStory);
         }
     }
 
     @Override
-    public void createImageStory(@NonNull ImageStory imageStory) {
+    public void create(@NonNull ImageStory imageStory) {
         imageStoryDao.create(imageStory);
     }
 
     @Override
-    public void editImageStory(@NonNull ImageStory imageStory) {
+    public void edit(@NonNull ImageStory imageStory) {
         imageStoryDao.deleteById(imageStory.getId());
         imageStoryDao.create(imageStory);
     }
 
     @Override
-    public void deleteImageStory(@NonNull Integer petId) {
+    public void delete(@NonNull Integer petId) {
         imageStoryDao.deleteById(petId);
     }
 
     @Override
-    public void getCount(@NonNull LoadCountCallback callback) {
-        callback.onCount((int) imageStoryDao.countOf());
-    }
-
-    @Override
-    public void swapImageStory(@NonNull List<ImageStory> imageStories) {
+    public void swap(@NonNull List<ImageStory> imageStories) {
         imageStoryDao.delete(imageStories);
         imageStoryDao.callBatchTasks(new Callable<Void>() {
 
@@ -101,5 +97,10 @@ public class ImageStoriesLocalDataSource implements ImageStoryDataSource {
                 return null;
             }
         });
+    }
+
+    @Override
+    public void count(@NonNull LoadCountCallback callback) {
+        callback.onCount(imageStoryDao.countOf());
     }
 }

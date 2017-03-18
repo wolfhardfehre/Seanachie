@@ -6,7 +6,7 @@
     <string name="no_data">keine Daten</string>
     <string name="elements_reordered">Kategorien umsortiert</string>
     <string name="elements_deleted">Kategorie gelöscht</string>
-
+    <string name="no_forms">Legen Sie zuerst ein Formular an, damit Sie fortfahren können.</string>
     <!-- drawer -->
     <string name="navigation_forms">Formulare</string>
     <string name="navigation_form_create">Neues Formular</string>
@@ -14,6 +14,7 @@
     <string name="navigation_image_story_create">Neues Tier</string>
     <string name="navigation_about">Über uns</string>
     <string name="navigation_categories">Kategorien</string>
+    <string name="navigation_form_pick">Wähle Formular</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
 

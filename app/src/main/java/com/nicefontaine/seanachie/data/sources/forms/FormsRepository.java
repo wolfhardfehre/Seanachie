@@ -20,56 +20,62 @@ package com.nicefontaine.seanachie.data.sources.forms;
 import android.support.annotation.NonNull;
 
 import com.nicefontaine.seanachie.data.models.Form;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 
 import java.util.List;
 
 import static dagger.internal.Preconditions.checkNotNull;
 
 
-public class FormsRepository implements FormsDataSource {
+public class FormsRepository implements DataSource<Form> {
 
     private static FormsRepository instance;
 
-    private FormsDataSource formsLocalDataSource;
+    private DataSource<Form> formsLocalDataSource;
 
-    public static FormsRepository getInstance(@NonNull FormsDataSource formsLocalDataSource) {
+    public static FormsRepository getInstance(@NonNull DataSource<Form> formsLocalDataSource) {
         if (instance == null) {
             instance = new FormsRepository(formsLocalDataSource);
         }
         return instance;
     }
 
-    private FormsRepository(@NonNull FormsDataSource formsLocalDataSource) {
+    private FormsRepository(@NonNull DataSource<Form> formsLocalDataSource) {
         this.formsLocalDataSource = checkNotNull(formsLocalDataSource);
     }
 
     @Override
-    public void getForms(@NonNull LoadFormsCallback callback) {
-        formsLocalDataSource.getForms(callback);
+    public void getData(@NonNull LoadDataCallback<Form> callback) {
+        formsLocalDataSource.getData(callback);
     }
 
     @Override
-    public void getForm(@NonNull Integer formId, @NonNull LoadFormCallback callback) {
-        formsLocalDataSource.getForm(formId, callback);
+    public void getElement(@NonNull Integer formId, @NonNull LoadElementCallback<Form> callback) {
+        formsLocalDataSource.getElement(formId, callback);
     }
 
     @Override
-    public void createForm(@NonNull Form form) {
-        formsLocalDataSource.createForm(form);
+    public void create(@NonNull Form form) {
+        formsLocalDataSource.create(form);
     }
 
     @Override
-    public void editForm(@NonNull Form form) {
-        formsLocalDataSource.editForm(form);
+    public void edit(@NonNull Form form) {
+        formsLocalDataSource.edit(form);
     }
 
     @Override
-    public void deleteForm(@NonNull Integer formId) {
-        formsLocalDataSource.deleteForm(formId);
+    public void delete(@NonNull Integer formId) {
+        formsLocalDataSource.delete(formId);
     }
 
     @Override
-    public void swapForm(@NonNull List<Form> forms) {
-        formsLocalDataSource.swapForm(forms);
+    public void swap(@NonNull List<Form> forms) {
+        formsLocalDataSource.swap(forms);
+    }
+
+    @Override
+    public void count(@NonNull LoadCountCallback callback) {
+        formsLocalDataSource.count(callback);
     }
 }

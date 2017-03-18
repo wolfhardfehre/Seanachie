@@ -20,14 +20,14 @@ package com.nicefontaine.seanachie.ui.forms;
 import android.support.annotation.NonNull;
 
 import com.nicefontaine.seanachie.data.models.Form;
-import com.nicefontaine.seanachie.data.sources.forms.FormsDataSource;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 import com.nicefontaine.seanachie.data.sources.forms.FormsRepository;
 
 import java.util.List;
 
 public class FormsPresenter implements
         FormsContract.Presenter,
-        FormsDataSource.LoadFormsCallback {
+        DataSource.LoadDataCallback<Form> {
 
     private final FormsRepository formsRepository;
     private final FormsContract.View view;
@@ -42,12 +42,12 @@ public class FormsPresenter implements
 
     @Override
     public void onResume() {
-        formsRepository.getForms(this);
+        formsRepository.getData(this);
     }
 
     @Override
     public void onRefresh() {
-        formsRepository.getForms(this);
+        formsRepository.getData(this);
     }
 
     @Override
@@ -57,16 +57,16 @@ public class FormsPresenter implements
 
     @Override
     public void itemMoved(List<Form> forms) {
-        formsRepository.swapForm(forms);
+        formsRepository.swap(forms);
     }
 
     @Override
     public void itemRemoved(Integer formId) {
-        formsRepository.deleteForm(formId);
+        formsRepository.delete(formId);
     }
 
     @Override
-    public void onFormsLoaded(List<Form> forms) {
+    public void onDataLoaded(List<Form> forms) {
         view.loadForms(forms);
         if (isResumed) {
             view.initRecycler();
@@ -77,7 +77,7 @@ public class FormsPresenter implements
     }
 
     @Override
-    public void onNoForms() {
+    public void noData() {
         view.noData();
         if (isResumed) {
             view.initRecycler();

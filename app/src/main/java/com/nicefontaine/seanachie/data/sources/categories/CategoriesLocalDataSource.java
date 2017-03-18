@@ -23,14 +23,16 @@ import android.support.annotation.NonNull;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.nicefontaine.seanachie.data.DatabaseHelper;
 import com.nicefontaine.seanachie.data.models.Category;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import static dagger.internal.Preconditions.checkNotNull;
 
 
-public class CategoriesLocalDataSource implements CategoriesDataSource {
+public class CategoriesLocalDataSource implements DataSource<Category> {
 
     private static CategoriesLocalDataSource instance;
     private RuntimeExceptionDao<Category, Integer> categoriesDao;
@@ -50,43 +52,44 @@ public class CategoriesLocalDataSource implements CategoriesDataSource {
 
 
     @Override
-    public void getCategories(@NonNull LoadCategoriesCallback callback) {
+    public void getData(@NonNull LoadDataCallback<Category> callback) {
         List<Category> categories = categoriesDao.queryForAll();
         if (categories.isEmpty()) {
-            callback.onNoCategories();
+            callback.noData();
         } else {
-            callback.onCategoriesLoaded(categories);
+            callback.onDataLoaded(categories);
         }
     }
 
     @Override
-    public void getCategory(@NonNull Integer categoryId, @NonNull LoadCategoryCallback callback) {
+    public void getElement(@NonNull Integer categoryId,
+                           @NonNull LoadElementCallback<Category> callback) {
         Category category = categoriesDao.queryForId(categoryId);
         if (category == null) {
-            callback.onNoCategory();
+            callback.noElement();
         } else {
-            callback.onCategoryLoaded(category);
+            callback.onElementLoaded(category);
         }
     }
 
     @Override
-    public void createCategory(@NonNull Category category) {
+    public void create(@NonNull Category category) {
         categoriesDao.create(category);
     }
 
     @Override
-    public void editCategory(@NonNull Category category) {
+    public void edit(@NonNull Category category) {
         categoriesDao.deleteById(category.getId());
         categoriesDao.create(category);
     }
 
     @Override
-    public void deleteCategory(@NonNull Integer categoryId) {
+    public void delete(@NonNull Integer categoryId) {
         categoriesDao.deleteById(categoryId);
     }
 
     @Override
-    public void swapCategory(@NonNull List<Category> categories) {
+    public void swap(@NonNull List<Category> categories) {
         categoriesDao.delete(categories);
         categoriesDao.callBatchTasks(new Callable<Void>() {
 
@@ -97,5 +100,11 @@ public class CategoriesLocalDataSource implements CategoriesDataSource {
                 return null;
             }
         });
+    }
+
+    @Override
+    public void count(@NonNull LoadCountCallback callback) {
+        long count = categoriesDao.countOf();
+        callback.onCount(count);
     }
 }

@@ -20,61 +20,62 @@ package com.nicefontaine.seanachie.data.sources.image_stories;
 import android.support.annotation.NonNull;
 
 import com.nicefontaine.seanachie.data.models.ImageStory;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 
 import java.util.List;
 
 import static dagger.internal.Preconditions.checkNotNull;
 
 
-public class ImageStoriesRepository implements ImageStoryDataSource {
+public class ImageStoriesRepository implements DataSource<ImageStory> {
 
     private static ImageStoriesRepository instance;
 
-    private ImageStoryDataSource imageStoriesLocalDataSource;
+    private DataSource<ImageStory> imageStoriesLocalDataSource;
 
-    public static ImageStoriesRepository getInstance(@NonNull ImageStoryDataSource imageStoriesLocalDataSource) {
+    public static ImageStoriesRepository getInstance(@NonNull DataSource<ImageStory> imageStoriesLocalDataSource) {
         if (instance == null) {
             instance = new ImageStoriesRepository(imageStoriesLocalDataSource);
         }
         return instance;
     }
 
-    private ImageStoriesRepository(@NonNull ImageStoryDataSource imageStoriesLocalDataSource) {
+    private ImageStoriesRepository(@NonNull DataSource<ImageStory> imageStoriesLocalDataSource) {
         this.imageStoriesLocalDataSource = checkNotNull(imageStoriesLocalDataSource);
     }
 
     @Override
-    public void getImageStories(@NonNull LoadImageStoriesCallback callback) {
-        imageStoriesLocalDataSource.getImageStories(callback);
+    public void getData(@NonNull LoadDataCallback<ImageStory> callback) {
+        imageStoriesLocalDataSource.getData(callback);
     }
 
     @Override
-    public void getImageStory(@NonNull Integer formId, @NonNull LoadImageStoryCallback callback) {
-        imageStoriesLocalDataSource.getImageStory(formId, callback);
+    public void getElement(@NonNull Integer formId, @NonNull LoadElementCallback<ImageStory> callback) {
+        imageStoriesLocalDataSource.getElement(formId, callback);
     }
 
     @Override
-    public void createImageStory(@NonNull ImageStory imageStory) {
-        imageStoriesLocalDataSource.createImageStory(imageStory);
+    public void create(@NonNull ImageStory imageStory) {
+        imageStoriesLocalDataSource.create(imageStory);
     }
 
     @Override
-    public void editImageStory(@NonNull ImageStory imageStory) {
-        imageStoriesLocalDataSource.editImageStory(imageStory);
+    public void edit(@NonNull ImageStory imageStory) {
+        imageStoriesLocalDataSource.edit(imageStory);
     }
 
     @Override
-    public void deleteImageStory(@NonNull Integer petId) {
-        imageStoriesLocalDataSource.deleteImageStory(petId);
+    public void delete(@NonNull Integer petId) {
+        imageStoriesLocalDataSource.delete(petId);
     }
 
     @Override
-    public void getCount(@NonNull LoadCountCallback callback) {
-        imageStoriesLocalDataSource.getCount(callback);
+    public void swap(@NonNull List<ImageStory> imageStories) {
+        imageStoriesLocalDataSource.swap(imageStories);
     }
 
     @Override
-    public void swapImageStory(@NonNull List<ImageStory> imageStories) {
-        imageStoriesLocalDataSource.swapImageStory(imageStories);
+    public void count(@NonNull LoadCountCallback callback) {
+        imageStoriesLocalDataSource.count(callback);
     }
 }

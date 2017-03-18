@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nicefontaine.seanachie.ui.dialogs;
+package com.nicefontaine.seanachie.ui.form_picker;
 
 
 import android.app.AlertDialog;
@@ -40,6 +40,15 @@ public class FormPickerDialogFragment extends DialogFragment {
         void onFormSelected(Form form);
     }
 
+    public static FormPickerDialogFragment getInstance(List<Form> forms) {
+        FormPickerDialogFragment.forms = forms;
+        return new FormPickerDialogFragment();
+    }
+
+    public FormPickerDialogFragment() {
+        // Required empty public constructor
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -59,10 +68,5 @@ public class FormPickerDialogFragment extends DialogFragment {
                 .setNegativeButton(R.string.category_create_cancel,
                         (dialog, id) -> dismiss());
         return builder.create();
-    }
-
-    public static FormPickerDialogFragment getInstance(List<Form> forms) {
-        FormPickerDialogFragment.forms = forms;
-        return new FormPickerDialogFragment();
     }
 }

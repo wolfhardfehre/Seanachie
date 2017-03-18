@@ -1,7 +1,6 @@
 package com.nicefontaine.seanachie.ui.image_stories;
 
 
-import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.ui.BasePresenter;
 import com.nicefontaine.seanachie.ui.BaseView;
@@ -13,8 +12,6 @@ public interface ImageStoriesContract {
 
     interface View extends BaseView<Presenter> {
 
-        void loadForms(List<Form> forms);
-
         void loadImageStories(List<ImageStory> imageStories);
 
         void noData();
@@ -25,8 +22,6 @@ public interface ImageStoriesContract {
     }
 
     interface Presenter extends BasePresenter {
-
-        void addImageStory();
 
         void itemMoved(List<ImageStory> imageStories);
 

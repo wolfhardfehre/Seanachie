@@ -30,24 +30,28 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
 import com.nicefontaine.seanachie.data.models.Form;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 import com.nicefontaine.seanachie.data.sources.categories.CategoriesRepository;
 import com.nicefontaine.seanachie.data.sources.forms.FormsRepository;
 import com.nicefontaine.seanachie.data.sources.image_stories.ImageStoriesRepository;
 import com.nicefontaine.seanachie.ui.categories.CategoriesFragment;
 import com.nicefontaine.seanachie.ui.categories.CategoriesPresenter;
-import com.nicefontaine.seanachie.ui.dialogs.FormPickerDialogFragment;
-import com.nicefontaine.seanachie.ui.formcreate.FormCreateFragment;
-import com.nicefontaine.seanachie.ui.formcreate.FormCreatePresenter;
+import com.nicefontaine.seanachie.ui.form_picker.FormPickerDialogFragment;
+import com.nicefontaine.seanachie.ui.form_create.FormCreateFragment;
+import com.nicefontaine.seanachie.ui.form_create.FormCreatePresenter;
 import com.nicefontaine.seanachie.ui.forms.FormsFragment;
 import com.nicefontaine.seanachie.ui.forms.FormsPresenter;
 import com.nicefontaine.seanachie.ui.image_story_create.ImageStoryCreateFragment;
 import com.nicefontaine.seanachie.ui.image_story_create.ImageStoryCreatePresenter;
 import com.nicefontaine.seanachie.ui.image_stories.ImageStoriesFragment;
 import com.nicefontaine.seanachie.ui.image_stories.ImageStoriesPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -66,6 +70,7 @@ public class HomeActivity extends AppCompatActivity implements
     public static final int NAVIGATION_CATEGORY = R.id.navigation_categories;
     public static final int NAVIGATION_FORMS = R.id.navigation_forms;
     public static final int NAVIGATION_NEW_FROM = R.string.navigation_form_create;
+    public static final int NAVIGATION_PICK_FORM = R.string.navigation_form_pick;
     public static final int NAVIGATION_IMAGE_STORIES = R.id.navigation_pets;
     public static final int NAVIGATION_NEW_IMAGE_STORIES = R.string.navigation_image_story_create;
     public static final int NAVIGATION_ABOUT = R.id.navigation_about;
@@ -157,6 +162,8 @@ public class HomeActivity extends AppCompatActivity implements
                 setupFormsFragment(); break;
             case NAVIGATION_NEW_FROM:
                 setupFormCreateFragment(); break;
+            case NAVIGATION_PICK_FORM:
+                setupFormPickerFragment(); break;
             case NAVIGATION_IMAGE_STORIES:
                 setupImageStoriesFragment(); break;
             case NAVIGATION_NEW_IMAGE_STORIES:
@@ -188,9 +195,25 @@ public class HomeActivity extends AppCompatActivity implements
         replaceContainerFragment(formsFragment);
     }
 
+    private void setupFormPickerFragment() {
+        formsRepository.getData(new DataSource.LoadDataCallback<Form>() {
+
+            @Override
+            public void onDataLoaded(List<Form> data) {
+                FormPickerDialogFragment df = FormPickerDialogFragment.getInstance(data);
+                df.show(fragmentManager, "form_picker");
+            }
+
+            @Override
+            public void noData() {
+                Toast.makeText(HomeActivity.this, R.string.no_forms, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
     private void setupImageStoriesFragment() {
         ImageStoriesFragment imageStoriesFragment = ImageStoriesFragment.getInstance();
-        new ImageStoriesPresenter(imageStoriesRepository, formsRepository, imageStoriesFragment);
+        new ImageStoriesPresenter(imageStoriesRepository, imageStoriesFragment);
         replaceContainerFragment(imageStoriesFragment);
     }
 

@@ -14,33 +14,31 @@
  * limitations under the License.
  */
 
-package com.nicefontaine.seanachie.ui.formcreate;
+package com.nicefontaine.seanachie.ui.form_create;
 
 
 import android.support.annotation.NonNull;
 
 import com.nicefontaine.seanachie.data.models.Category;
 import com.nicefontaine.seanachie.data.models.Form;
-import com.nicefontaine.seanachie.data.sources.categories.CategoriesDataSource;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 import com.nicefontaine.seanachie.data.sources.categories.CategoriesRepository;
-import com.nicefontaine.seanachie.data.sources.forms.FormsDataSource;
 import com.nicefontaine.seanachie.data.sources.forms.FormsRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class FormCreatePresenter implements
         FormCreateContract.Presenter,
-        CategoriesDataSource.LoadCategoriesCallback,
-        FormsDataSource.LoadFormsCallback {
+        DataSource.LoadDataCallback<Category>,
+        DataSource.LoadCountCallback {
 
     private final FormCreateContract.View view;
     private final FormsRepository formsRepository;
     private final CategoriesRepository categoriesRepository;
     private List<Category> categories;
-    private List<Form> forms;
     private boolean isResumed = true;
+    private long currentCount;
 
     public FormCreatePresenter(@NonNull FormsRepository formsRepository,
                                @NonNull CategoriesRepository categoriesRepository,
@@ -52,7 +50,7 @@ public class FormCreatePresenter implements
     }
 
     @Override
-    public void onCategoriesLoaded(List<Category> categories) {
+    public void onDataLoaded(List<Category> categories) {
         this.categories = categories;
         view.loadCategories(categories);
         if (isResumed) {
@@ -64,17 +62,7 @@ public class FormCreatePresenter implements
     }
 
     @Override
-    public void onFormsLoaded(List<Form> forms) {
-        this.forms = forms;
-    }
-
-    @Override
-    public void onNoForms() {
-        this.forms = new ArrayList<>();
-    }
-
-    @Override
-    public void onNoCategories() {
+    public void noData() {
         view.noData();
         if (isResumed) {
             view.initRecycler();
@@ -86,9 +74,8 @@ public class FormCreatePresenter implements
 
     @Override
     public void createForm(String title, String name, String story) {
-        Form form = new Form(forms.size() + 1, title)
-                .categories(categories, name, story);
-        formsRepository.createForm(form);
+        Form form = new Form((int) currentCount + 1, title).categories(categories, name, story);
+        formsRepository.create(form);
         view.finish();
     }
 
@@ -108,8 +95,7 @@ public class FormCreatePresenter implements
 
     @Override
     public void onResume() {
-        formsRepository.getForms(this);
-        categoriesRepository.getCategories(this);
+        categoriesRepository.getData(this);
     }
 
     @Override
@@ -120,5 +106,10 @@ public class FormCreatePresenter implements
     @Override
     public void onPause() {
         isResumed = true;
+    }
+
+    @Override
+    public void onCount(long count) {
+        currentCount = count;
     }
 }

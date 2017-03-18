@@ -20,57 +20,63 @@ package com.nicefontaine.seanachie.data.sources.categories;
 import android.support.annotation.NonNull;
 
 import com.nicefontaine.seanachie.data.models.Category;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 
 import java.util.List;
 
 import static dagger.internal.Preconditions.checkNotNull;
 
 
-public class CategoriesRepository implements CategoriesDataSource {
+public class CategoriesRepository implements DataSource<Category> {
 
     private static CategoriesRepository instance;
 
-    private CategoriesDataSource categoriesLocalDataSource;
+    private DataSource<Category> categoriesLocalDataSource;
 
     public static CategoriesRepository getInstance(
-            @NonNull CategoriesDataSource categoriesLocalDataSource) {
+            @NonNull DataSource<Category> categoriesLocalDataSource) {
         if (instance == null) {
             instance = new CategoriesRepository(categoriesLocalDataSource);
         }
         return instance;
     }
 
-    private CategoriesRepository(@NonNull CategoriesDataSource categoriesLocalDataSource) {
+    private CategoriesRepository(@NonNull DataSource<Category> categoriesLocalDataSource) {
         this.categoriesLocalDataSource = checkNotNull(categoriesLocalDataSource);
     }
 
     @Override
-    public void getCategories(@NonNull LoadCategoriesCallback callback) {
-        categoriesLocalDataSource.getCategories(callback);
+    public void getData(@NonNull LoadDataCallback<Category> callback) {
+        categoriesLocalDataSource.getData(callback);
     }
 
     @Override
-    public void getCategory(@NonNull Integer categoryId, @NonNull LoadCategoryCallback callback) {
-        categoriesLocalDataSource.getCategory(categoryId, callback);
+    public void getElement(@NonNull Integer categoryId, @NonNull LoadElementCallback<Category> callback) {
+        categoriesLocalDataSource.getElement(categoryId, callback);
     }
 
     @Override
-    public void createCategory(@NonNull Category category) {
-        categoriesLocalDataSource.createCategory(category);
+    public void create(@NonNull Category category) {
+        categoriesLocalDataSource.create(category);
     }
 
     @Override
-    public void editCategory(@NonNull Category category) {
-        categoriesLocalDataSource.editCategory(category);
+    public void edit(@NonNull Category category) {
+        categoriesLocalDataSource.edit(category);
     }
 
     @Override
-    public void deleteCategory(@NonNull Integer categoryId) {
-        categoriesLocalDataSource.deleteCategory(categoryId);
+    public void delete(@NonNull Integer categoryId) {
+        categoriesLocalDataSource.delete(categoryId);
     }
 
     @Override
-    public void swapCategory(@NonNull List<Category> categories) {
-        categoriesLocalDataSource.swapCategory(categories);
+    public void swap(@NonNull List<Category> categories) {
+        categoriesLocalDataSource.swap(categories);
+    }
+
+    @Override
+    public void count(@NonNull LoadCountCallback callback) {
+        categoriesLocalDataSource.count(callback);
     }
 }
