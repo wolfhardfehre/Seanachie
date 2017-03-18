@@ -36,7 +36,7 @@ import com.nicefontaine.seanachie.SeanachieApp;
 import com.nicefontaine.seanachie.data.Session;
 import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
-import com.nicefontaine.seanachie.ui.BaseActivity;
+import com.nicefontaine.seanachie.ui.HomeActivity;
 import com.nicefontaine.seanachie.ui.ItemTouchCallback;
 import com.nicefontaine.seanachie.ui.dialogs.FormPickerDialogFragment;
 
@@ -70,7 +70,7 @@ public class ImageStoriesFragment extends Fragment implements
     @BindView(R.id.f_base_coordinator) public CoordinatorLayout coordinator;
     @BindView(R.id.f_base_recycler) protected RecyclerView recycler;
 
-    public static ImageStoriesFragment newInstance() {
+    public static ImageStoriesFragment getInstance() {
         return new ImageStoriesFragment();
     }
 
@@ -96,7 +96,7 @@ public class ImageStoriesFragment extends Fragment implements
     @Override
     public void onStart() {
         super.onStart();
-        ((BaseActivity) context).initNavigationDrawer(toolbar);
+        ((HomeActivity) context).initNavigationDrawer(toolbar);
         toolbar.setTitle(R.string.navigation_image_stories);
     }
 
@@ -104,6 +104,12 @@ public class ImageStoriesFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         presenter.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        presenter.onPause();
     }
 
     @OnClick(R.id.f_base_fab)

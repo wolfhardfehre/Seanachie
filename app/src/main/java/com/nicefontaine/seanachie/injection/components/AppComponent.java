@@ -18,14 +18,13 @@ package com.nicefontaine.seanachie.injection.components;
 
 
 import com.nicefontaine.seanachie.injection.modules.SourceModule;
-import com.nicefontaine.seanachie.ui.BaseActivity;
+import com.nicefontaine.seanachie.ui.HomeActivity;
 import com.nicefontaine.seanachie.ui.categories.CategoriesFragment;
 import com.nicefontaine.seanachie.ui.formcreate.FormCreateFragment;
 import com.nicefontaine.seanachie.ui.dialogs.CreateCategoryFragmentDialog;
 import com.nicefontaine.seanachie.ui.forms.FormsFragment;
 import com.nicefontaine.seanachie.injection.modules.AppModule;
 import com.nicefontaine.seanachie.data.Session;
-import com.nicefontaine.seanachie.injection.modules.NetModule;
 import com.nicefontaine.seanachie.ui.image_story_create.ImageStoryCreateFragment;
 import com.nicefontaine.seanachie.ui.image_stories.ImageStoriesFragment;
 
@@ -35,11 +34,11 @@ import dagger.Component;
 
 
 @Singleton
-@Component(modules={AppModule.class, NetModule.class, SourceModule.class})
+@Component(modules={AppModule.class, SourceModule.class})
 public interface AppComponent {
 
     // activities
-    void inject(BaseActivity baseActivity);
+    void inject(HomeActivity homeActivity);
 
     // fragments
     void inject(FormsFragment formsFragment);

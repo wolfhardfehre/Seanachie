@@ -39,5 +39,7 @@
     <string name="story_create_no_story">Geschichte wird benötigt</string>
     <string name="story_create_speech_to_text">Jetzt sprechen</string>
     <string name="story_create_empty_story">Nicht verstanden</string>
+    <string name="story_create_send_with">.. gesendet mit Seanachie</string>
+    <string name="story_create_sending">sende Email</string>
 
 </resources>
