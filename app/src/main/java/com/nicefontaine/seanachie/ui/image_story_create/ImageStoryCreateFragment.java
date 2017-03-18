@@ -148,9 +148,9 @@ public class ImageStoryCreateFragment extends Fragment implements
         String name = categories.get(0).getValue();
         String story = categories.get(categories.size() - 1).getValue();
         if (name == null) {
-            Snackbar.make(coordinator, R.string.story_create_no_name, LENGTH_LONG).show();
+            makeSnackbar(R.string.story_create_no_name);
         } else if (story == null) {
-            Snackbar.make(coordinator, R.string.story_create_no_story, LENGTH_LONG).show();
+            makeSnackbar(R.string.story_create_no_story);
         } else {
             presenter.createImageStory(currentStory);
         }
@@ -167,7 +167,7 @@ public class ImageStoryCreateFragment extends Fragment implements
 
     @Override
     public void noData() {
-        Snackbar.make(coordinator, R.string.no_data, LENGTH_LONG).show();
+        makeSnackbar(R.string.no_data);
     }
 
     @Override
@@ -186,6 +186,7 @@ public class ImageStoryCreateFragment extends Fragment implements
 
     @Override
     public void setStory(String story) {
+        if (story.equals("")) makeSnackbar(R.string.story_create_empty_story);
         categories.get(currentPosition).setValue(story);
         cache();
     }
@@ -226,5 +227,9 @@ public class ImageStoryCreateFragment extends Fragment implements
     public void onSpeechToText(int position) {
         presenter.story(getActivity(), getString(R.string.story_create_speech_to_text));
         this.currentPosition = position;
+    }
+
+    private void makeSnackbar(int text) {
+        Snackbar.make(coordinator, text, LENGTH_LONG).show();
     }
 }
