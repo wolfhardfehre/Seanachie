@@ -34,7 +34,7 @@ import android.widget.EditText;
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
 import com.nicefontaine.seanachie.data.models.Category;
-import com.nicefontaine.seanachie.ui.BaseActivity;
+import com.nicefontaine.seanachie.ui.HomeActivity;
 import com.nicefontaine.seanachie.ui.ItemTouchCallback;
 import com.nicefontaine.seanachie.ui.categories.CategoriesAdapter;
 
@@ -47,7 +47,7 @@ import butterknife.OnClick;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.widget.LinearLayout.VERTICAL;
-import static com.nicefontaine.seanachie.ui.BaseActivity.NAVIGATION_FORMS;
+import static com.nicefontaine.seanachie.ui.HomeActivity.NAVIGATION_FORMS;
 import static com.nicefontaine.seanachie.utils.Utils.isNull;
 
 
@@ -64,7 +64,7 @@ public class FormCreateFragment extends Fragment implements
     private CategoriesAdapter adapter;
     private FormCreateContract.Presenter presenter;
 
-    public static FormCreateFragment newInstance() {
+    public static FormCreateFragment getInstance() {
         return new FormCreateFragment();
     }
 
@@ -89,7 +89,7 @@ public class FormCreateFragment extends Fragment implements
     @Override
     public void onStart() {
         super.onStart();
-        ((BaseActivity) context).initNavigationDrawer(toolbar);
+        ((HomeActivity) context).initNavigationDrawer(toolbar);
         toolbar.setTitle(R.string.navigation_form_create);
     }
 
@@ -171,6 +171,6 @@ public class FormCreateFragment extends Fragment implements
 
     @Override
     public void finish() {
-        ((BaseActivity) context).changeContent(NAVIGATION_FORMS);
+        ((HomeActivity) context).changeContent(NAVIGATION_FORMS);
     }
 }

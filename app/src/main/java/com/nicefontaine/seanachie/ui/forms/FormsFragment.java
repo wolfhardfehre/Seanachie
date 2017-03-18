@@ -33,7 +33,7 @@ import android.view.ViewGroup;
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
 import com.nicefontaine.seanachie.data.models.Form;
-import com.nicefontaine.seanachie.ui.BaseActivity;
+import com.nicefontaine.seanachie.ui.HomeActivity;
 import com.nicefontaine.seanachie.ui.ItemTouchCallback;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ import butterknife.OnClick;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.widget.LinearLayout.VERTICAL;
-import static com.nicefontaine.seanachie.ui.BaseActivity.NAVIGATION_NEW_FROM;
+import static com.nicefontaine.seanachie.ui.HomeActivity.NAVIGATION_NEW_FROM;
 
 
 public class FormsFragment extends Fragment implements
@@ -60,7 +60,7 @@ public class FormsFragment extends Fragment implements
     private FormsAdapter adapter;
     private FormsContract.Presenter presenter;
 
-    public static FormsFragment newInstance() {
+    public static FormsFragment getInstance() {
         return new FormsFragment();
     }
 
@@ -86,7 +86,7 @@ public class FormsFragment extends Fragment implements
     @Override
     public void onStart() {
         super.onStart();
-        ((BaseActivity) context).initNavigationDrawer(toolbar);
+        ((HomeActivity) context).initNavigationDrawer(toolbar);
         toolbar.setTitle(R.string.navigation_forms);
     }
 
@@ -96,9 +96,15 @@ public class FormsFragment extends Fragment implements
         presenter.onResume();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        presenter.onPause();
+    }
+
     @OnClick(R.id.f_base_fab)
     public void addForm() {
-        ((BaseActivity) context).changeContent(NAVIGATION_NEW_FROM);
+        ((HomeActivity) context).changeContent(NAVIGATION_NEW_FROM);
     }
 
     @Override

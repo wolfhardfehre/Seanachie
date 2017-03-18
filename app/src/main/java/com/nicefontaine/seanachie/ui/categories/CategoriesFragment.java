@@ -30,12 +30,11 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
 import com.nicefontaine.seanachie.data.models.Category;
-import com.nicefontaine.seanachie.ui.BaseActivity;
+import com.nicefontaine.seanachie.ui.HomeActivity;
 import com.nicefontaine.seanachie.ui.ItemTouchCallback;
 import com.nicefontaine.seanachie.ui.dialogs.CreateCategoryFragmentDialog;
 
@@ -65,7 +64,7 @@ public class CategoriesFragment extends Fragment implements
     private CategoriesAdapter adapter;
     private CategoriesContract.Presenter presenter;
 
-    public static CategoriesFragment newInstance() {
+    public static CategoriesFragment getInstance() {
         return new CategoriesFragment();
     }
 
@@ -91,7 +90,7 @@ public class CategoriesFragment extends Fragment implements
     @Override
     public void onStart() {
         super.onStart();
-        ((BaseActivity) context).initNavigationDrawer(toolbar);
+        ((HomeActivity) context).initNavigationDrawer(toolbar);
         toolbar.setTitle(R.string.navigation_categories);
     }
 
@@ -99,6 +98,12 @@ public class CategoriesFragment extends Fragment implements
     public void onResume() {
         super.onResume();
         presenter.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        presenter.onPause();
     }
 
     @OnClick(R.id.f_base_fab)
@@ -111,7 +116,7 @@ public class CategoriesFragment extends Fragment implements
     public void onItemMove(int fromPosition, int toPosition) {
         categories = adapter.getCategories();
         presenter.itemMoved(categories);
-        Snackbar.make(coordinator, R.string.elements_reordered, LENGTH_LONG).show();
+        makeSnackbar(R.string.elements_reordered);
     }
 
     @Override
@@ -120,7 +125,7 @@ public class CategoriesFragment extends Fragment implements
         Integer categoryId = category.getId();
         categories.remove(category);
         presenter.itemRemoved(categoryId);
-        Snackbar.make(coordinator, R.string.elements_deleted, LENGTH_LONG).show();
+        makeSnackbar(R.string.elements_deleted);
     }
 
     @Override
@@ -162,5 +167,9 @@ public class CategoriesFragment extends Fragment implements
     @Override
     public void onRefreshCategories() {
         presenter.onRefresh();
+    }
+
+    private void makeSnackbar(int text) {
+        Snackbar.make(coordinator, text, LENGTH_LONG).show();
     }
 }

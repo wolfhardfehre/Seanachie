@@ -53,12 +53,11 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 import static com.nicefontaine.seanachie.ui.image_story_create.ImageStoryCreatePresenter.REQUEST_SPEECH_TO_TEXT;
 
 
-public class BaseActivity extends AppCompatActivity implements
+public class HomeActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         FormPickerDialogFragment.OnFormSelectedListener {
 
@@ -98,7 +97,6 @@ public class BaseActivity extends AppCompatActivity implements
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
             }
-
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
             }
@@ -173,31 +171,31 @@ public class BaseActivity extends AppCompatActivity implements
     }
 
     private void setupFormCreateFragment() {
-        FormCreateFragment formCreateFragment = FormCreateFragment.newInstance();
+        FormCreateFragment formCreateFragment = FormCreateFragment.getInstance();
         new FormCreatePresenter(formsRepository, categoriesRepository, formCreateFragment);
         replaceContainerFragment(formCreateFragment);
     }
 
     private void setupImageStoryCreateFragment() {
-        ImageStoryCreateFragment imageStoryCreateFragment = ImageStoryCreateFragment.newInstance();
+        ImageStoryCreateFragment imageStoryCreateFragment = ImageStoryCreateFragment.getInstance();
         new ImageStoryCreatePresenter(selectedForm, imageStoriesRepository, imageStoryCreateFragment);
         replaceContainerFragment(imageStoryCreateFragment);
     }
 
     private void setupFormsFragment() {
-        FormsFragment formsFragment = FormsFragment.newInstance();
+        FormsFragment formsFragment = FormsFragment.getInstance();
         new FormsPresenter(formsRepository, formsFragment);
         replaceContainerFragment(formsFragment);
     }
 
     private void setupImageStoriesFragment() {
-        ImageStoriesFragment imageStoriesFragment = ImageStoriesFragment.newInstance();
+        ImageStoriesFragment imageStoriesFragment = ImageStoriesFragment.getInstance();
         new ImageStoriesPresenter(imageStoriesRepository, formsRepository, imageStoriesFragment);
         replaceContainerFragment(imageStoriesFragment);
     }
 
     private void setupCategoryFragment() {
-        CategoriesFragment categoriesFragment = CategoriesFragment.newInstance();
+        CategoriesFragment categoriesFragment = CategoriesFragment.getInstance();
         new CategoriesPresenter(categoriesRepository, categoriesFragment);
         replaceContainerFragment(categoriesFragment);
     }
@@ -215,5 +213,14 @@ public class BaseActivity extends AppCompatActivity implements
     public void onFormSelected(Form form) {
         this.selectedForm = form;
         changeContent(NAVIGATION_NEW_IMAGE_STORIES);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (fragmentManager.getBackStackEntryCount() > 1) {
+            fragmentManager.popBackStack();
+        } else {
+            finish();
+        }
     }
 }

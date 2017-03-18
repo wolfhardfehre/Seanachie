@@ -22,7 +22,6 @@ import android.app.Application;
 import com.nicefontaine.seanachie.injection.components.AppComponent;
 import com.nicefontaine.seanachie.injection.components.DaggerAppComponent;
 import com.nicefontaine.seanachie.injection.modules.AppModule;
-import com.nicefontaine.seanachie.injection.modules.NetModule;
 import com.nicefontaine.seanachie.injection.modules.SourceModule;
 
 import timber.log.Timber;
@@ -48,7 +47,6 @@ public class SeanachieApp extends Application {
     public void initComponents() {
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
-                .netModule(new NetModule())
                 .sourceModule(new SourceModule())
                 .build();
     }

@@ -22,7 +22,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
-import com.nicefontaine.seanachie.data.DefaultEventBus;
 import com.nicefontaine.seanachie.data.DefaultPersistentData;
 import com.nicefontaine.seanachie.data.PersistentData;
 import com.nicefontaine.seanachie.data.Session;
@@ -64,12 +63,6 @@ public class AppModule {
     @Singleton
     SharedPreferences provideSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(mApplication);
-    }
-
-    @Provides
-    @Singleton
-    DefaultEventBus provideEventBus() {
-        return DefaultEventBus.getInstance();
     }
 
     @Provides

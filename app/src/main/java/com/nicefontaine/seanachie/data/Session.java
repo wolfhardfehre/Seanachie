@@ -25,7 +25,6 @@ import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.nicefontaine.seanachie.R;
-import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 
 import java.util.HashMap;
@@ -36,22 +35,13 @@ import timber.log.Timber;
 
 public final class Session {
 
-    private static Session instance;
     private static final Gson gson = new Gson();
 
     private final Map<Integer, Object> cache;
     private final PersistentData persistentData;
 
-    public static Session getInstance(@NonNull Context context,
-                                      @NonNull PersistentData persistentData) {
-        if (instance == null) {
-            instance = new Session(context, persistentData);
-        }
-        return instance;
-    }
-
     @SuppressLint("UseSparseArrays")
-    private Session(@NonNull Context context, @NonNull PersistentData persistentData) {
+    public Session(@NonNull Context context, @NonNull PersistentData persistentData) {
         this.persistentData = persistentData;
         cache = new HashMap<>();
         initialize(context);

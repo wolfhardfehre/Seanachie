@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -30,11 +29,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.nicefontaine.seanachie.R;
@@ -42,13 +39,12 @@ import com.nicefontaine.seanachie.SeanachieApp;
 import com.nicefontaine.seanachie.data.Session;
 import com.nicefontaine.seanachie.data.models.Category;
 import com.nicefontaine.seanachie.data.models.ImageStory;
-import com.nicefontaine.seanachie.ui.BaseActivity;
+import com.nicefontaine.seanachie.ui.HomeActivity;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
 import javax.inject.Inject;
 
@@ -59,7 +55,7 @@ import timber.log.Timber;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.widget.LinearLayout.VERTICAL;
-import static com.nicefontaine.seanachie.ui.BaseActivity.NAVIGATION_IMAGE_STORIES;
+import static com.nicefontaine.seanachie.ui.HomeActivity.NAVIGATION_IMAGE_STORIES;
 
 
 public class ImageStoryCreateFragment extends Fragment implements
@@ -81,7 +77,7 @@ public class ImageStoryCreateFragment extends Fragment implements
     @BindView(R.id.f_image_story_create_recycler) protected RecyclerView recycler;
     @BindView(R.id.f_image_story_create_backdrop) protected ImageView photo;
 
-    public static ImageStoryCreateFragment newInstance() {
+    public static ImageStoryCreateFragment getInstance() {
         return new ImageStoryCreateFragment();
     }
 
@@ -107,7 +103,7 @@ public class ImageStoryCreateFragment extends Fragment implements
     @Override
     public void onStart() {
         super.onStart();
-        ((BaseActivity) context).initNavigationDrawer(toolbar);
+        ((HomeActivity) context).initNavigationDrawer(toolbar);
         collapsingToolbarLayout.setTitle(getString(R.string.navigation_image_story_create));
     }
 
@@ -137,10 +133,12 @@ public class ImageStoryCreateFragment extends Fragment implements
         Uri uri = Uri.fromFile(new File(currentStory.getImagePath()));
         Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND)
                 .setType("application/image")
-                .putExtra(android.content.Intent.EXTRA_SUBJECT, currentStory.getCategoriesContent())
-                .putExtra(android.content.Intent.EXTRA_TEXT, "... send with Seanachie")
+                .putExtra(android.content.Intent.EXTRA_SUBJECT,
+                        currentStory.getCategoriesContent())
+                .putExtra(android.content.Intent.EXTRA_TEXT,
+                        getString(R.string.story_create_send_with))
                 .putExtra(Intent.EXTRA_STREAM, uri);
-        startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+        startActivity(Intent.createChooser(emailIntent, getString(R.string.story_create_sending)));
     }
 
     @OnClick(R.id.f_image_story_create_fab)
@@ -214,7 +212,7 @@ public class ImageStoryCreateFragment extends Fragment implements
 
     @Override
     public void finish() {
-        ((BaseActivity) context).changeContent(NAVIGATION_IMAGE_STORIES);
+        ((HomeActivity) context).changeContent(NAVIGATION_IMAGE_STORIES);
     }
 
     @Override
