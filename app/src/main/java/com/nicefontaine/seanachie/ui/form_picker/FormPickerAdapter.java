@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nicefontaine.seanachie.ui.dialogs;
+package com.nicefontaine.seanachie.ui.form_picker;
 
 
 import android.content.Context;
@@ -33,18 +33,16 @@ import com.nicefontaine.seanachie.data.models.Form;
 import java.util.List;
 
 
-public class FormPickerAdapter extends ArrayAdapter<Form> {
+class FormPickerAdapter extends ArrayAdapter<Form> {
 
-    private final Context mContext;
     private final int resource;
     private final List<Form> forms;
     private LayoutInflater inflater;
 
-    public FormPickerAdapter(Context context, int resource, List<Form> forms) {
+    FormPickerAdapter(Context context, int resource, List<Form> forms) {
         super(context, resource, forms);
         this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.resource = resource;
-        this.mContext = context;
         this.forms = forms;
     }
 
@@ -53,15 +51,15 @@ public class FormPickerAdapter extends ArrayAdapter<Form> {
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) convertView = inflater.inflate(resource, null);
         StoryHolder holder = new StoryHolder(convertView);
-        holder.name.setText(forms.get(position).getSpecies());
+        Form form = forms.get(position);
+        holder.name.setText(form.getSpecies());
         return convertView;
     }
 
-    public class StoryHolder extends RecyclerView.ViewHolder {
-        protected ImageView icon;
+    private class StoryHolder extends RecyclerView.ViewHolder {
         protected TextView name;
 
-        public StoryHolder(View itemView) {
+        StoryHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.adapter_form_picker_textview);
         }

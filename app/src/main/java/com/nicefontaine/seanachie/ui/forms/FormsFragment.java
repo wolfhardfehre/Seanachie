@@ -91,6 +91,11 @@ public class FormsFragment extends Fragment implements
     }
 
     @Override
+    public void setPresenter(FormsContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         presenter.onResume();
@@ -111,7 +116,7 @@ public class FormsFragment extends Fragment implements
     public void onItemMove(int fromPosition, int toPosition) {
         forms = adapter.getForms();
         presenter.itemMoved(forms);
-        Snackbar.make(coordinator, "Elements reordered", LENGTH_LONG).show();
+        makeSnackbar(R.string.elements_reordered);
     }
 
     @Override
@@ -119,12 +124,7 @@ public class FormsFragment extends Fragment implements
         Form form = forms.get(position);
         Integer formId = form.getId();
         presenter.itemRemoved(formId);
-        Snackbar.make(coordinator, "Element deleted", LENGTH_LONG).show();
-    }
-
-    @Override
-    public void setPresenter(FormsContract.Presenter presenter) {
-        this.presenter = presenter;
+        makeSnackbar(R.string.elements_deleted);
     }
 
     @Override
@@ -134,13 +134,13 @@ public class FormsFragment extends Fragment implements
 
     @Override
     public void noData() {
-        Snackbar.make(coordinator, "No data", LENGTH_LONG).show();
+        makeSnackbar(R.string.no_data);
     }
 
     @Override
     public void initRecycler() {
         if (forms == null) forms = new ArrayList<>();
-        this.adapter = new FormsAdapter(context, forms);
+        adapter = new FormsAdapter(context, forms);
         recycler.setLayoutManager(new LinearLayoutManager(context, VERTICAL, false));
         recycler.setAdapter(adapter);
         initItemTouchCallback();
@@ -156,5 +156,9 @@ public class FormsFragment extends Fragment implements
         ItemTouchHelper.Callback callback = new ItemTouchCallback(this, adapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(recycler);
+    }
+
+    private void makeSnackbar(int text) {
+        Snackbar.make(coordinator, text, LENGTH_LONG).show();
     }
 }

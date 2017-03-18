@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.nicefontaine.seanachie.ui.dialogs.CreateCategoryFragmentDialog">
+    tools:context="com.nicefontaine.seanachie.ui.category_create.CategoryCreateFragmentDialog">
 
     <EditText
         android:id="@+id/f_create_category_edittext"

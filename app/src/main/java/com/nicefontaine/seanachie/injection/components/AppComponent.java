@@ -20,8 +20,8 @@ package com.nicefontaine.seanachie.injection.components;
 import com.nicefontaine.seanachie.injection.modules.SourceModule;
 import com.nicefontaine.seanachie.ui.HomeActivity;
 import com.nicefontaine.seanachie.ui.categories.CategoriesFragment;
-import com.nicefontaine.seanachie.ui.formcreate.FormCreateFragment;
-import com.nicefontaine.seanachie.ui.dialogs.CreateCategoryFragmentDialog;
+import com.nicefontaine.seanachie.ui.form_create.FormCreateFragment;
+import com.nicefontaine.seanachie.ui.category_create.CategoryCreateFragmentDialog;
 import com.nicefontaine.seanachie.ui.forms.FormsFragment;
 import com.nicefontaine.seanachie.injection.modules.AppModule;
 import com.nicefontaine.seanachie.data.Session;
@@ -46,7 +46,7 @@ public interface AppComponent {
     void inject(CategoriesFragment categoriesFragment);
     void inject(FormCreateFragment formCreateFragment);
     void inject(ImageStoryCreateFragment imageStoryCreateFragment);
-    void inject(CreateCategoryFragmentDialog createCategoryFragmentDialog);
+    void inject(CategoryCreateFragmentDialog categoryCreateFragmentDialog);
 
     // Session
     void inject(Session session);

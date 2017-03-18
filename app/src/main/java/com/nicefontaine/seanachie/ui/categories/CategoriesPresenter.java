@@ -20,21 +20,22 @@ package com.nicefontaine.seanachie.ui.categories;
 import android.support.annotation.NonNull;
 
 import com.nicefontaine.seanachie.data.models.Category;
-import com.nicefontaine.seanachie.data.sources.categories.CategoriesDataSource;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 import com.nicefontaine.seanachie.data.sources.categories.CategoriesRepository;
 
 import java.util.List;
 
 
 public class CategoriesPresenter implements
-        CategoriesContract.Presenter, CategoriesDataSource.LoadCategoriesCallback {
+        CategoriesContract.Presenter,
+        DataSource.LoadDataCallback<Category> {
 
     private final CategoriesRepository categoriesRepository;
     private final CategoriesContract.View view;
     private boolean isResumed = true;
 
     public CategoriesPresenter(@NonNull CategoriesRepository categoriesRepository,
-            @NonNull CategoriesContract.View view) {
+                               @NonNull CategoriesContract.View view) {
         this.categoriesRepository = categoriesRepository;
         this.view = view;
         this.view.setPresenter(this);
@@ -42,12 +43,12 @@ public class CategoriesPresenter implements
 
     @Override
     public void onResume() {
-        categoriesRepository.getCategories(this);
+        categoriesRepository.getData(this);
     }
 
     @Override
     public void onRefresh() {
-        categoriesRepository.getCategories(this);
+        categoriesRepository.getData(this);
     }
 
     @Override
@@ -57,16 +58,16 @@ public class CategoriesPresenter implements
 
     @Override
     public void itemMoved(List<Category> categories) {
-        categoriesRepository.swapCategory(categories);
+        categoriesRepository.swap(categories);
     }
 
     @Override
     public void itemRemoved(Integer categoryId) {
-        categoriesRepository.deleteCategory(categoryId);
+        categoriesRepository.delete(categoryId);
     }
 
     @Override
-    public void onCategoriesLoaded(List<Category> categories) {
+    public void onDataLoaded(List<Category> categories) {
         view.loadCategories(categories);
         if (isResumed) {
             view.initRecycler();
@@ -77,7 +78,7 @@ public class CategoriesPresenter implements
     }
 
     @Override
-    public void onNoCategories() {
+    public void noData() {
         view.noData();
         if (isResumed) {
             view.initRecycler();

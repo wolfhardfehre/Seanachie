@@ -23,6 +23,7 @@ import android.support.annotation.NonNull;
 import com.j256.ormlite.dao.RuntimeExceptionDao;
 import com.nicefontaine.seanachie.data.DatabaseHelper;
 import com.nicefontaine.seanachie.data.models.Form;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -30,7 +31,7 @@ import java.util.concurrent.Callable;
 import static dagger.internal.Preconditions.checkNotNull;
 
 
-public class FormsLocalDataSource implements FormsDataSource {
+public class FormsLocalDataSource implements DataSource<Form> {
 
     private static FormsLocalDataSource instance;
     private RuntimeExceptionDao<Form, Integer> formDao;
@@ -50,43 +51,43 @@ public class FormsLocalDataSource implements FormsDataSource {
 
 
     @Override
-    public void getForms(@NonNull LoadFormsCallback callback) {
+    public void getData(@NonNull LoadDataCallback<Form> callback) {
         List<Form> forms = formDao.queryForAll();
         if (forms.isEmpty()) {
-            callback.onNoForms();
+            callback.noData();
         } else {
-            callback.onFormsLoaded(forms);
+            callback.onDataLoaded(forms);
         }
     }
 
     @Override
-    public void getForm(@NonNull Integer formId, @NonNull LoadFormCallback callback) {
+    public void getElement(@NonNull Integer formId, @NonNull LoadElementCallback<Form> callback) {
         Form form = formDao.queryForId(formId);
         if (form == null) {
-            callback.onNoForm();
+            callback.noElement();
         } else {
-            callback.onFormLoaded(form);
+            callback.onElementLoaded(form);
         }
     }
 
     @Override
-    public void createForm(@NonNull Form form) {
+    public void create(@NonNull Form form) {
         formDao.create(form);
     }
 
     @Override
-    public void editForm(@NonNull Form form) {
+    public void edit(@NonNull Form form) {
         formDao.deleteById(form.getId());
         formDao.create(form);
     }
 
     @Override
-    public void deleteForm(@NonNull Integer formId) {
+    public void delete(@NonNull Integer formId) {
         formDao.deleteById(formId);
     }
 
     @Override
-    public void swapForm(@NonNull List<Form> forms) {
+    public void swap(@NonNull List<Form> forms) {
         formDao.delete(forms);
         formDao.callBatchTasks(new Callable<Void>() {
 
@@ -97,5 +98,11 @@ public class FormsLocalDataSource implements FormsDataSource {
                 return null;
             }
         });
+    }
+
+    @Override
+    public void count(@NonNull LoadCountCallback callback) {
+        long count = formDao.countOf();
+        callback.onCount(count);
     }
 }

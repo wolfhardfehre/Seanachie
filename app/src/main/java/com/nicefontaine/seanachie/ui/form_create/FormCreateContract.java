@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nicefontaine.seanachie.ui.formcreate;
+package com.nicefontaine.seanachie.ui.form_create;
 
 
 import com.nicefontaine.seanachie.data.models.Category;

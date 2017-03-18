@@ -24,7 +24,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,11 +37,9 @@ import android.view.ViewGroup;
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
 import com.nicefontaine.seanachie.data.Session;
-import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.ui.HomeActivity;
 import com.nicefontaine.seanachie.ui.ItemTouchCallback;
-import com.nicefontaine.seanachie.ui.dialogs.FormPickerDialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +53,7 @@ import butterknife.OnClick;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.widget.LinearLayout.VERTICAL;
+import static com.nicefontaine.seanachie.ui.HomeActivity.NAVIGATION_PICK_FORM;
 
 
 public class ImageStoriesFragment extends Fragment implements
@@ -63,7 +61,6 @@ public class ImageStoriesFragment extends Fragment implements
         ItemTouchCallback.OnItemTouchListener {
 
     private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 1;
-    private static final String FORM_PICKER = "form_picker";
 
     private Context context;
     private List<ImageStory> imageStories;
@@ -133,7 +130,7 @@ public class ImageStoriesFragment extends Fragment implements
     @OnClick(R.id.f_base_fab)
     public void addImageStory() {
         session.removeSetting(R.string.pref_cached_image_story);
-        presenter.addImageStory();
+        ((HomeActivity) context).changeContent(NAVIGATION_PICK_FORM);
     }
 
     @Override
@@ -149,12 +146,6 @@ public class ImageStoriesFragment extends Fragment implements
         Integer petId = imageStory.getId();
         presenter.itemRemoved(petId);
         makeSnackbar(R.string.elements_deleted);
-    }
-
-    @Override
-    public void loadForms(List<Form> forms) {
-        DialogFragment df = FormPickerDialogFragment.getInstance(forms);
-        df.show(getActivity().getSupportFragmentManager(), FORM_PICKER);
     }
 
     @Override

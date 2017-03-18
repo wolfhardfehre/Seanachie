@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nicefontaine.seanachie.ui.dialogs;
+package com.nicefontaine.seanachie.ui.category_create;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -28,13 +28,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
 import com.nicefontaine.seanachie.data.models.Category;
-import com.nicefontaine.seanachie.data.sources.categories.CategoriesDataSource;
+import com.nicefontaine.seanachie.data.sources.DataSource;
 import com.nicefontaine.seanachie.data.sources.categories.CategoriesRepository;
 
 import java.util.List;
@@ -42,8 +41,8 @@ import java.util.List;
 import javax.inject.Inject;
 
 
-public class CreateCategoryFragmentDialog extends DialogFragment implements
-        CategoriesDataSource.LoadCategoriesCallback {
+public class CategoryCreateFragmentDialog extends DialogFragment implements
+        DataSource.LoadDataCallback<Category> {
 
     @Inject protected CategoriesRepository categoriesRepository;
 
@@ -55,9 +54,9 @@ public class CreateCategoryFragmentDialog extends DialogFragment implements
         void onRefreshCategories();
     }
 
-    public static CreateCategoryFragmentDialog newInstance(OnCategoryListener listener) {
-        CreateCategoryFragmentDialog.listener = listener;
-        return new CreateCategoryFragmentDialog();
+    public static CategoryCreateFragmentDialog getInstance(OnCategoryListener listener) {
+        CategoryCreateFragmentDialog.listener = listener;
+        return new CategoryCreateFragmentDialog();
     }
 
     @Override
@@ -94,25 +93,25 @@ public class CreateCategoryFragmentDialog extends DialogFragment implements
                 .setNegativeButton(R.string.category_create_cancel, (dialog, id) -> dismiss())
                 .setPositiveButton(R.string.category_create_save, (dialog, id) -> {
                     editText = (EditText) getDialog().findViewById(R.id.f_create_category_edittext);
-                    categoriesRepository.getCategories(this);
+                    categoriesRepository.getData(this);
                 });
         return builder.create();
     }
 
     @Override
-    public void onCategoriesLoaded(List<Category> categories) {
+    public void onDataLoaded(List<Category> categories) {
         createCategory(categories.size() + 1);
     }
 
     @Override
-    public void onNoCategories() {
+    public void noData() {
         createCategory(1);
     }
 
     private void createCategory(int position) {
         String name = editText.getText().toString();
         Category category = new Category(position, name);
-        categoriesRepository.createCategory(category);
+        categoriesRepository.create(category);
         listener.onRefreshCategories();
         dismiss();
     }
