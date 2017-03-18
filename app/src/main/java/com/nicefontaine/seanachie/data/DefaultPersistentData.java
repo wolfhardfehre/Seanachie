@@ -29,23 +29,11 @@ import java.util.List;
 public class DefaultPersistentData implements PersistentData,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static DefaultPersistentData instance;
-
     private final Resources resources;
-
     private final SharedPreferences sharedPreferences;
-
     private final List<OnPersistentDataChangeListener> persistentDataChangeListeners;
 
-    public static DefaultPersistentData getInstance(@NonNull Resources resources,
-                                                    @NonNull SharedPreferences sharedPreferences) {
-        if (instance == null) {
-            instance = new DefaultPersistentData(resources, sharedPreferences);
-        }
-        return instance;
-    }
-
-    private DefaultPersistentData(@NonNull Resources resources,
+    public DefaultPersistentData(@NonNull Resources resources,
                                   @NonNull SharedPreferences sharedPreferences) {
         this.resources = resources;
         this.sharedPreferences = sharedPreferences;

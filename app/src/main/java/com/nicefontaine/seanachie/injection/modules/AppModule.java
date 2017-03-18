@@ -55,26 +55,15 @@ public class AppModule {
 
     @Provides
     @Singleton
-    Resources provideResources() {
-        return mApplication.getResources();
-    }
-
-    @Provides
-    @Singleton
-    SharedPreferences provideSharedPreferences() {
-        return PreferenceManager.getDefaultSharedPreferences(mApplication);
-    }
-
-    @Provides
-    @Singleton
-    PersistentData providePersistentData(final Resources resources,
-                                         final SharedPreferences sharedPreferences) {
-        return DefaultPersistentData.getInstance(resources, sharedPreferences);
+    PersistentData providePersistentData(final Application application) {
+        Resources resources = application.getResources();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(application);
+        return new DefaultPersistentData(resources, preferences);
     }
 
     @Provides
     @Singleton
     Session provideSession(final Context context, final PersistentData persistentData) {
-        return Session.getInstance(context, persistentData);
+        return new Session(context, persistentData);
     }
 }

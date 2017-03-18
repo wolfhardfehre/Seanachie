@@ -54,7 +54,7 @@ interface ImageStoryCreateContract {
 
         void createImageStory(ImageStory imageStory);
 
-        void camera(Activity activity) throws IOException;
+        void takePicture(Activity activity);
 
         void story(Activity activity, String text);
 

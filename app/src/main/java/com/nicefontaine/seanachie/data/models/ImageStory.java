@@ -23,6 +23,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 
@@ -56,6 +57,11 @@ public class ImageStory extends BaseEntry {
 
     public ImageStory form(Form form) {
         this.form = form;
+        return this;
+    }
+
+    public ImageStory categories(List<Category> categories) {
+        form.categories(categories);
         return this;
     }
 

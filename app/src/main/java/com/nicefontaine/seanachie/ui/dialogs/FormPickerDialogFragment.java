@@ -61,7 +61,7 @@ public class FormPickerDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    public static FormPickerDialogFragment newInstance(List<Form> forms) {
+    public static FormPickerDialogFragment getInstance(List<Form> forms) {
         FormPickerDialogFragment.forms = forms;
         return new FormPickerDialogFragment();
     }

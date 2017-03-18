@@ -88,10 +88,15 @@ public class ImageStoryCreatePresenter implements
     public void onPause() {}
 
     @Override
-    public void camera(Activity activity) throws IOException {
+    public void takePicture(Activity activity) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(activity.getPackageManager()) != null) {
-            File photoFile = createImageFile();
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             Uri photoURI = FileProvider.getUriForFile(activity, REPOSITORY, photoFile);
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
             activity.startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);

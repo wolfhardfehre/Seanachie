@@ -18,11 +18,15 @@ package com.nicefontaine.seanachie.ui.image_stories;
 
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -49,6 +53,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.widget.LinearLayout.VERTICAL;
 
@@ -57,6 +62,7 @@ public class ImageStoriesFragment extends Fragment implements
         ImageStoriesContract.View,
         ItemTouchCallback.OnItemTouchListener {
 
+    private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 1;
     private static final String FORM_PICKER = "form_picker";
 
     private Context context;
@@ -101,9 +107,21 @@ public class ImageStoriesFragment extends Fragment implements
     }
 
     @Override
+    public void setPresenter(ImageStoriesContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        presenter.onResume();
+        boolean permission = askPermission(WRITE_EXTERNAL_STORAGE);
+        if (permission) {
+            presenter.onResume();
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[] {WRITE_EXTERNAL_STORAGE},
+                    WRITE_EXTERNAL_STORAGE_PERMISSION);
+        }
     }
 
     @Override
@@ -122,7 +140,7 @@ public class ImageStoriesFragment extends Fragment implements
     public void onItemMove(int fromPosition, int toPosition) {
         imageStories = adapter.getImageStories();
         presenter.itemMoved(imageStories);
-        Snackbar.make(coordinator, "Elements reordered", LENGTH_LONG).show();
+        makeSnackbar(R.string.elements_reordered);
     }
 
     @Override
@@ -130,17 +148,12 @@ public class ImageStoriesFragment extends Fragment implements
         ImageStory imageStory = imageStories.get(position);
         Integer petId = imageStory.getId();
         presenter.itemRemoved(petId);
-        Snackbar.make(coordinator, "Element deleted", Snackbar.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void setPresenter(ImageStoriesContract.Presenter presenter) {
-        this.presenter = presenter;
+        makeSnackbar(R.string.elements_deleted);
     }
 
     @Override
     public void loadForms(List<Form> forms) {
-        DialogFragment df = FormPickerDialogFragment.newInstance(forms);
+        DialogFragment df = FormPickerDialogFragment.getInstance(forms);
         df.show(getActivity().getSupportFragmentManager(), FORM_PICKER);
     }
 
@@ -151,8 +164,9 @@ public class ImageStoriesFragment extends Fragment implements
 
     @Override
     public void noData() {
-        Snackbar.make(coordinator, "No data", LENGTH_LONG).show();
+        makeSnackbar(R.string.no_data);
     }
+
     @Override
     public void initRecycler() {
         if (imageStories == null) imageStories = new ArrayList<>();
@@ -162,15 +176,42 @@ public class ImageStoriesFragment extends Fragment implements
         initItemTouchCallback();
     }
 
+    private void initItemTouchCallback() {
+        ItemTouchHelper.Callback callback = new ItemTouchCallback(this, adapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recycler);
+    }
+
     @Override
     public void updateRecycler() {
         adapter.setImageStories(imageStories);
         adapter.notifyDataSetChanged();
     }
 
-    private void initItemTouchCallback() {
-        ItemTouchHelper.Callback callback = new ItemTouchCallback(this, adapter);
-        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(recycler);
+    private boolean askPermission(String permission) {
+        return ContextCompat.checkSelfPermission(getActivity(),
+                permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int request, @NonNull String permissions[],
+                                           @NonNull int[] results) {
+        switch (request) {
+            case WRITE_EXTERNAL_STORAGE_PERMISSION:
+                if (isGranted(results)) {
+                    presenter.onResume();
+                } else {
+                    makeSnackbar(R.string.story_create_read_permission);
+                }
+                break;
+        }
+    }
+
+    private boolean isGranted(@NonNull int[] results) {
+        return results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void makeSnackbar(int text) {
+        Snackbar.make(coordinator, text, LENGTH_LONG).show();
     }
 }

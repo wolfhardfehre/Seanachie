@@ -19,13 +19,17 @@ package com.nicefontaine.seanachie.ui.image_story_create;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -42,7 +46,6 @@ import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.ui.HomeActivity;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,8 +54,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import timber.log.Timber;
 
+import static android.Manifest.permission.RECORD_AUDIO;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.widget.LinearLayout.VERTICAL;
 import static com.nicefontaine.seanachie.ui.HomeActivity.NAVIGATION_IMAGE_STORIES;
@@ -61,6 +65,9 @@ import static com.nicefontaine.seanachie.ui.HomeActivity.NAVIGATION_IMAGE_STORIE
 public class ImageStoryCreateFragment extends Fragment implements
         ImageStoryCreateContract.View,
         ImageStoryCreateAdapter.OnImageClickedListener {
+
+    private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 1;
+    private static final int RECORD_AUDIO_PERMISSION = 2;
 
     private Context context;
     private List<Category> categories;
@@ -72,7 +79,7 @@ public class ImageStoryCreateFragment extends Fragment implements
     @Inject protected Session session;
 
     @BindView(R.id.toolbar) protected Toolbar toolbar;
-    @BindView(R.id.collapsing) protected CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.collapsing) protected CollapsingToolbarLayout toolbarLayout;
     @BindView(R.id.f_image_story_create_coordinator) protected CoordinatorLayout coordinator;
     @BindView(R.id.f_image_story_create_recycler) protected RecyclerView recycler;
     @BindView(R.id.f_image_story_create_backdrop) protected ImageView photo;
@@ -104,7 +111,7 @@ public class ImageStoryCreateFragment extends Fragment implements
     public void onStart() {
         super.onStart();
         ((HomeActivity) context).initNavigationDrawer(toolbar);
-        collapsingToolbarLayout.setTitle(getString(R.string.navigation_image_story_create));
+        toolbarLayout.setTitle(getString(R.string.navigation_image_story_create));
     }
 
     @Override
@@ -121,15 +128,18 @@ public class ImageStoryCreateFragment extends Fragment implements
 
     @OnClick(R.id.f_image_story_create_photo_card)
     public void takePicture() {
-        try {
-            presenter.camera(getActivity());
-        } catch (IOException e) {
-            Timber.e(e);
+        boolean permission = askPermission(WRITE_EXTERNAL_STORAGE);
+        if (permission) {
+            presenter.takePicture(getActivity());
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[] {WRITE_EXTERNAL_STORAGE},
+                    WRITE_EXTERNAL_STORAGE_PERMISSION);
         }
     }
 
     @OnClick(R.id.f_image_story_send_fab)
-    public void sendImageStory() {
+    public void sendEmail() {
         Uri uri = Uri.fromFile(new File(currentStory.getImagePath()));
         Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND)
                 .setType("application/image")
@@ -184,7 +194,9 @@ public class ImageStoryCreateFragment extends Fragment implements
 
     @Override
     public void setStory(String story) {
-        if (story.equals("")) makeSnackbar(R.string.story_create_empty_story);
+        if (story.isEmpty()) {
+            makeSnackbar(R.string.story_create_empty_story);
+        }
         categories.get(currentPosition).setValue(story);
         cache();
     }
@@ -201,7 +213,7 @@ public class ImageStoryCreateFragment extends Fragment implements
     }
 
     private void cache() {
-        currentStory.getForm().categories(categories);
+        currentStory.categories(categories);
         session.store(R.string.pref_cached_image_story, currentStory);
     }
 
@@ -217,14 +229,51 @@ public class ImageStoryCreateFragment extends Fragment implements
 
     @Override
     public void onEditText(int position, String text) {
-        this.currentPosition = position;
+        currentPosition = position;
         setStory(text);
     }
 
     @Override
     public void onSpeechToText(int position) {
-        presenter.story(getActivity(), getString(R.string.story_create_speech_to_text));
-        this.currentPosition = position;
+        currentPosition = position;
+        boolean permission = askPermission(RECORD_AUDIO);
+        if (permission) {
+            presenter.story(getActivity(), getString(R.string.story_create_speech_to_text));
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[] {RECORD_AUDIO},
+                    RECORD_AUDIO_PERMISSION);
+        }
+    }
+
+    private boolean askPermission(String permission) {
+        return ContextCompat.checkSelfPermission(getActivity(),
+                permission) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int request, @NonNull String permissions[],
+                                           @NonNull int[] results) {
+        switch (request) {
+            case WRITE_EXTERNAL_STORAGE_PERMISSION:
+                if (isGranted(results)) {
+                    presenter.takePicture(getActivity());
+                } else {
+                    makeSnackbar(R.string.story_create_write_permission);
+                }
+                break;
+            case RECORD_AUDIO_PERMISSION:
+                if (isGranted(results)) {
+                    presenter.story(getActivity(), getString(R.string.story_create_speech_to_text));
+                } else {
+                    makeSnackbar(R.string.story_create_audio_permission);
+                }
+                break;
+        }
+    }
+
+    private boolean isGranted(@NonNull int[] results) {
+        return results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED;
     }
 
     private void makeSnackbar(int text) {

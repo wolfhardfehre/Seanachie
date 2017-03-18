@@ -41,5 +41,8 @@
     <string name="story_create_empty_story">Nicht verstanden</string>
     <string name="story_create_send_with">.. gesendet mit Seanachie</string>
     <string name="story_create_sending">sende Email</string>
+    <string name="story_create_read_permission">Aktion braucht Leserechte</string>
+    <string name="story_create_write_permission">Aktion braucht Schreibrechte</string>
+    <string name="story_create_audio_permission">Aktion braucht Aufnahmerechte</string>
 
 </resources>
