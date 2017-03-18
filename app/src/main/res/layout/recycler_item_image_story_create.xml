@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/card_margin"
-    android:orientation="vertical"
     app:cardCornerRadius="@dimen/card_corners"
     app:cardElevation="@dimen/card_elevation">
 
@@ -36,8 +35,9 @@
                 android:id="@+id/recycler_item_image_story_create_edittext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
                 android:hint="@string/recycler_image_story_create_category_hint"
-                android:inputType="textMultiLine|textAutoComplete|textAutoCorrect" />
+                android:inputType="textAutoComplete|textAutoCorrect|text" />
         </LinearLayout>
 
         <View
