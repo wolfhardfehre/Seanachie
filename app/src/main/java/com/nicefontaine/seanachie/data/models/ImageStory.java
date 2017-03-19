@@ -72,19 +72,24 @@ public class ImageStory extends BaseEntry {
     }
 
     public int count() {
-        if (!isNull(form)) {
-            List<Category> categories = form.getCategories();
-            if (!isNull(categories)) {
-                int count = 0;
-                for (Category category : categories) {
-                    if (!isNull(category.getValue())) {
-                        count++;
-                    }
+        if (hasCategories()) {
+            int count = 0;
+            for (Category category : form.getCategories()) {
+                if (!isNull(category.getValue())) {
+                    count++;
                 }
-                return count;
             }
+            return count;
         }
         return 0;
+    }
+
+    public String getName() {
+        return hasCategories() ? form.getCategories().get(0).getValue() : "";
+    }
+
+    private boolean hasCategories() {
+        return !isNull(form) && !isNull(form.getCategories());
     }
 
     public boolean isEmpty() {
