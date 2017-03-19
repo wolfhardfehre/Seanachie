@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/card_margin"
-    android:orientation="vertical"
     app:cardCornerRadius="@dimen/card_corners"
     app:cardElevation="@dimen/card_elevation">
 
@@ -17,15 +16,16 @@
 
         <ImageView
             android:id="@+id/recycler_item_image_story_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
+            android:layout_weight="0.5"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_pets_black_48dp"
+            android:src="@drawable/seanachie"
             tools:ignore="ContentDescription" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
             android:paddingStart="@dimen/standard_padding"

@@ -46,4 +46,7 @@
     <string name="story_create_write_permission">Aktion braucht Schreibrechte</string>
     <string name="story_create_audio_permission">Aktion braucht Aufnahmerechte</string>
 
+    <!-- image story recycler -->
+    <string name="recycler_story_filled_categories">ausgefüllte Kategorien</string>
+
 </resources>

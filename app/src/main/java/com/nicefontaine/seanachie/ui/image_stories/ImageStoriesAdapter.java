@@ -3,8 +3,6 @@ package com.nicefontaine.seanachie.ui.image_stories;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,11 +26,13 @@ import static com.nicefontaine.seanachie.utils.Utils.rightShift;
 class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.PetHolder> implements
         ItemTouchCallback.OnItemTouchListener {
 
+    private final Context context;
     private LayoutInflater inflater;
     private List<ImageStory> imageStories;
 
     ImageStoriesAdapter(Context context, List<ImageStory> imageStories) {
         this.inflater = LayoutInflater.from(context);
+        this.context = context;
         setImageStories(imageStories);
     }
 
@@ -64,7 +64,9 @@ class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.PetHo
             holder.image.setImageBitmap(bitmap);
         }
         holder.name.setText(imageStory.getForm().getCategories().get(0).getValue());
-        holder.category.setText(imageStory.getFirst());
+        String category = String.format("%s %s",
+                imageStory.count(), context.getString(R.string.recycler_story_filled_categories));
+        holder.category.setText(category);
     }
 
     @Override
