@@ -52,7 +52,11 @@ interface ImageStoryCreateContract {
 
     interface Presenter extends BasePresenter {
 
-        void createImageStory(ImageStory imageStory);
+        void onEditImageStory(int id);
+
+        void saveImageStory(ImageStory imageStory);
+
+        void editImageStory(ImageStory imageStory);
 
         void takePicture(Activity activity);
 

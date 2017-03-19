@@ -79,6 +79,7 @@ public class ImageStoryCreateFragment extends Fragment implements
     private ImageStoryCreateContract.Presenter presenter;
     private int currentPosition;
     private ImageStory currentStory;
+    private int storyId;
 
     @Inject protected Session session;
 
@@ -134,7 +135,12 @@ public class ImageStoryCreateFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        presenter.onResume();
+        storyId = session.get(R.string.pref_editable_image_story, -1);
+        if (storyId == -1) {
+            presenter.onResume();
+        } else {
+            presenter.onEditImageStory(storyId);
+        }
     }
 
     @Override
@@ -303,8 +309,10 @@ public class ImageStoryCreateFragment extends Fragment implements
             makeSnackbar(R.string.story_create_no_name);
         } else if (story == null) {
             makeSnackbar(R.string.story_create_no_story);
+        } else if (storyId == -1) {
+            presenter.saveImageStory(currentStory);
         } else {
-            presenter.createImageStory(currentStory);
+            presenter.editImageStory(currentStory);
         }
     }
 }

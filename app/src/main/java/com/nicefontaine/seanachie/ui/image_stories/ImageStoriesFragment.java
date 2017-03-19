@@ -53,12 +53,13 @@ import butterknife.OnClick;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.widget.LinearLayout.VERTICAL;
+import static com.nicefontaine.seanachie.ui.HomeActivity.NAVIGATION_NEW_IMAGE_STORIES;
 import static com.nicefontaine.seanachie.ui.HomeActivity.NAVIGATION_PICK_FORM;
 
 
 public class ImageStoriesFragment extends Fragment implements
         ImageStoriesContract.View,
-        ItemTouchCallback.OnItemTouchListener {
+        ItemTouchCallback.OnItemTouchListener, ImageStoriesAdapter.ImageStoryHolder.OnClickCallback {
 
     private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 1;
 
@@ -130,7 +131,15 @@ public class ImageStoriesFragment extends Fragment implements
     @OnClick(R.id.f_base_fab)
     public void addImageStory() {
         session.removeSetting(R.string.pref_cached_image_story);
+        session.store(R.string.pref_editable_image_story, -1);
         ((HomeActivity) context).changeContent(NAVIGATION_PICK_FORM);
+    }
+
+    @Override
+    public void onClick(int position) {
+        session.store(R.string.pref_editable_image_story, imageStories.get(position).getId());
+        Snackbar.make(coordinator, imageStories.get(position).getName(), LENGTH_LONG).show();
+        ((HomeActivity) context).changeContent(NAVIGATION_NEW_IMAGE_STORIES);
     }
 
     @Override
@@ -161,7 +170,7 @@ public class ImageStoriesFragment extends Fragment implements
     @Override
     public void initRecycler() {
         if (imageStories == null) imageStories = new ArrayList<>();
-        this.adapter = new ImageStoriesAdapter(context, imageStories);
+        this.adapter = new ImageStoriesAdapter(this, context, imageStories);
         recycler.setLayoutManager(new LinearLayoutManager(context, VERTICAL, false));
         recycler.setAdapter(adapter);
         initItemTouchCallback();

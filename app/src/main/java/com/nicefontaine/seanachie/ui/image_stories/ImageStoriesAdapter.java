@@ -23,15 +23,17 @@ import static com.nicefontaine.seanachie.utils.Utils.leftShift;
 import static com.nicefontaine.seanachie.utils.Utils.rightShift;
 
 
-class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.PetHolder> implements
+class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.ImageStoryHolder> implements
         ItemTouchCallback.OnItemTouchListener {
 
     private final Context context;
+    private final ImageStoriesFragment fragment;
     private LayoutInflater inflater;
     private List<ImageStory> imageStories;
 
-    ImageStoriesAdapter(Context context, List<ImageStory> imageStories) {
+    ImageStoriesAdapter(ImageStoriesFragment fragment, Context context, List<ImageStory> imageStories) {
         this.inflater = LayoutInflater.from(context);
+        this.fragment = fragment;
         this.context = context;
         setImageStories(imageStories);
     }
@@ -45,13 +47,13 @@ class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.PetHo
     }
 
     @Override
-    public ImageStoriesAdapter.PetHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ImageStoryHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(R.layout.recycler_item_image_story, parent, false);
-        return new ImageStoriesAdapter.PetHolder(view);
+        return new ImageStoryHolder(view, fragment);
     }
 
     @Override
-    public void onBindViewHolder(ImageStoriesAdapter.PetHolder holder, int position) {
+    public void onBindViewHolder(ImageStoryHolder holder, int position) {
         final ImageStory imageStory = imageStories.get(position);
         String path = imageStory.getImagePath();
         if (!isNull(path)) {
@@ -63,7 +65,7 @@ class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.PetHo
             }
             holder.image.setImageBitmap(bitmap);
         }
-        holder.name.setText(imageStory.getForm().getCategories().get(0).getValue());
+        holder.name.setText(imageStory.getName());
         String category = String.format("%s %s",
                 imageStory.count(), context.getString(R.string.recycler_story_filled_categories));
         holder.category.setText(category);
@@ -86,16 +88,28 @@ class ImageStoriesAdapter extends RecyclerView.Adapter<ImageStoriesAdapter.PetHo
         return imageStories.size();
     }
 
-    class PetHolder extends RecyclerView.ViewHolder {
+    static class ImageStoryHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView image;
         private TextView name;
         private TextView category;
+        private OnClickCallback listener;
 
-        PetHolder(View itemView) {
+        interface OnClickCallback {
+            void onClick(int position);
+        }
+
+        ImageStoryHolder(View itemView, ImageStoriesFragment fragment) {
             super(itemView);
             image = (ImageView) itemView.findViewById(R.id.recycler_item_image_story_image);
             name = (TextView) itemView.findViewById(R.id.recycler_item_image_story_name);
             category = (TextView) itemView.findViewById(R.id.recycler_item_image_story_first_category);
+            listener = fragment;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            listener.onClick(getAdapterPosition());
         }
     }
 }

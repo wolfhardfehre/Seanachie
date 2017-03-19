@@ -49,7 +49,7 @@ import static com.nicefontaine.seanachie.utils.Utils.isNull;
 
 public class ImageStoryCreatePresenter implements
         ImageStoryCreateContract.Presenter,
-        DataSource.LoadCountCallback {
+        DataSource.LoadCountCallback, DataSource.LoadElementCallback<ImageStory> {
 
     private static final String REPOSITORY = "com.nicefontaine.seanachie.fileprovider";
     private static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -69,14 +69,25 @@ public class ImageStoryCreatePresenter implements
     }
 
     @Override
-    public void createImageStory(ImageStory imageStory) {
+    public void saveImageStory(ImageStory imageStory) {
         imageStoriesRepository.create(imageStory);
+        view.finish();
+    }
+
+    @Override
+    public void editImageStory(ImageStory imageStory) {
+        imageStoriesRepository.edit(imageStory);
         view.finish();
     }
 
     @Override
     public void onResume() {
         imageStoriesRepository.count(this);
+    }
+
+    @Override
+    public void onEditImageStory(int id) {
+        imageStoriesRepository.getElement(id, this);
     }
 
     @Override
@@ -165,5 +176,16 @@ public class ImageStoryCreatePresenter implements
                 .form(form);
         view.loadImageStory(imageStory);
         view.initRecycler();
+    }
+
+    @Override
+    public void onElementLoaded(ImageStory element) {
+        view.loadImageStory(element);
+        view.initRecycler();
+    }
+
+    @Override
+    public void noElement() {
+        view.noData();
     }
 }

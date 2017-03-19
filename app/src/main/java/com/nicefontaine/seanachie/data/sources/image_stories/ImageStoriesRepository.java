@@ -50,8 +50,8 @@ public class ImageStoriesRepository implements DataSource<ImageStory> {
     }
 
     @Override
-    public void getElement(@NonNull Integer formId, @NonNull LoadElementCallback<ImageStory> callback) {
-        imageStoriesLocalDataSource.getElement(formId, callback);
+    public void getElement(@NonNull Integer id, @NonNull LoadElementCallback<ImageStory> callback) {
+        imageStoriesLocalDataSource.getElement(id, callback);
     }
 
     @Override
@@ -65,8 +65,8 @@ public class ImageStoriesRepository implements DataSource<ImageStory> {
     }
 
     @Override
-    public void delete(@NonNull Integer petId) {
-        imageStoriesLocalDataSource.delete(petId);
+    public void delete(@NonNull Integer id) {
+        imageStoriesLocalDataSource.delete(id);
     }
 
     @Override
