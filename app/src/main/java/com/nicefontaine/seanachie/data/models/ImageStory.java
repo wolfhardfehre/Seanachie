@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import static com.nicefontaine.seanachie.utils.Utils.isNull;
+
 
 @DatabaseTable(tableName = "image_story")
 public class ImageStory extends BaseEntry {
@@ -69,12 +71,20 @@ public class ImageStory extends BaseEntry {
         return form;
     }
 
-    public String getFirst() {
-        if (form != null && form.getCategories() != null && !form.getCategories().isEmpty()) {
-            Category category = form.getCategories().get(0);
-            return String.format("%s: %s", category.getKey(), category.getValue());
+    public int count() {
+        if (!isNull(form)) {
+            List<Category> categories = form.getCategories();
+            if (!isNull(categories)) {
+                int count = 0;
+                for (Category category : categories) {
+                    if (!isNull(category.getValue())) {
+                        count++;
+                    }
+                }
+                return count;
+            }
         }
-        return "...";
+        return 0;
     }
 
     public boolean isEmpty() {
