@@ -34,6 +34,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -60,11 +63,12 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.widget.LinearLayout.VERTICAL;
 import static com.nicefontaine.seanachie.ui.HomeActivity.NAVIGATION_IMAGE_STORIES;
+import static com.nicefontaine.seanachie.utils.Utils.isNull;
 
 
 public class ImageStoryCreateFragment extends Fragment implements
         ImageStoryCreateContract.View,
-        ImageStoryCreateAdapter.OnImageClickedListener {
+        ImageStoryCreateAdapter.OnImageClickedListener, Toolbar.OnMenuItemClickListener {
 
     private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 1;
     private static final int RECORD_AUDIO_PERMISSION = 2;
@@ -108,10 +112,23 @@ public class ImageStoryCreateFragment extends Fragment implements
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.image_story_create_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         ((HomeActivity) context).initNavigationDrawer(toolbar);
         toolbarLayout.setTitle(getString(R.string.navigation_image_story_create));
+        toolbar.setOnMenuItemClickListener(this);
     }
 
     @Override
@@ -135,32 +152,6 @@ public class ImageStoryCreateFragment extends Fragment implements
             ActivityCompat.requestPermissions(getActivity(),
                     new String[] {WRITE_EXTERNAL_STORAGE},
                     WRITE_EXTERNAL_STORAGE_PERMISSION);
-        }
-    }
-
-    @OnClick(R.id.f_image_story_send_fab)
-    public void sendEmail() {
-        Uri uri = Uri.fromFile(new File(currentStory.getImagePath()));
-        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND)
-                .setType("application/image")
-                .putExtra(android.content.Intent.EXTRA_SUBJECT,
-                        currentStory.getCategoriesContent())
-                .putExtra(android.content.Intent.EXTRA_TEXT,
-                        getString(R.string.story_create_send_with))
-                .putExtra(Intent.EXTRA_STREAM, uri);
-        startActivity(Intent.createChooser(emailIntent, getString(R.string.story_create_sending)));
-    }
-
-    @OnClick(R.id.f_image_story_create_fab)
-    public void createImageStory() {
-        String name = categories.get(0).getValue();
-        String story = categories.get(categories.size() - 1).getValue();
-        if (name == null) {
-            makeSnackbar(R.string.story_create_no_name);
-        } else if (story == null) {
-            makeSnackbar(R.string.story_create_no_story);
-        } else {
-            presenter.createImageStory(currentStory);
         }
     }
 
@@ -278,5 +269,42 @@ public class ImageStoryCreateFragment extends Fragment implements
 
     private void makeSnackbar(int text) {
         Snackbar.make(coordinator, text, LENGTH_LONG).show();
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.m_image_story_send:
+                sendEmail(); break;
+            case R.id.m_image_story_save:
+                saveImageStory(); break;
+        }
+        return true;
+    }
+
+    public void sendEmail() {
+        Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND)
+                .setType("application/image")
+                .putExtra(android.content.Intent.EXTRA_SUBJECT,
+                        currentStory.getCategoriesContent())
+                .putExtra(android.content.Intent.EXTRA_TEXT,
+                        getString(R.string.story_create_send_with));                ;
+        String path = currentStory.getImagePath();
+        if (!isNull(path)) {
+            emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(path)));
+        }
+        startActivity(Intent.createChooser(emailIntent, getString(R.string.story_create_sending)));
+    }
+
+    public void saveImageStory() {
+        String name = categories.get(0).getValue();
+        String story = categories.get(categories.size() - 1).getValue();
+        if (name == null) {
+            makeSnackbar(R.string.story_create_no_name);
+        } else if (story == null) {
+            makeSnackbar(R.string.story_create_no_story);
+        } else {
+            presenter.createImageStory(currentStory);
+        }
     }
 }
