@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="@dimen/text_divider_padding"
                 android:text="@string/recycler_forms_heading"
-                android:textColor="@color/grey_dark"
+                android:textColor="@color/primary_text"
                 android:textSize="@dimen/text_medium" />
 
             <TextView
@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/recycler_forms_content"
-                android:textColor="@color/grey_pinkish"
+                android:textColor="@color/secondary_text"
                 android:textSize="@dimen/text_hint_size" />
 
         </LinearLayout>

@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/recycler_forms_heading"
                 android:textAllCaps="true"
-                android:textColor="@color/grey_dark"
+                android:textColor="@color/primary_text"
                 android:textSize="@dimen/text_label_size" />
 
             <EditText
@@ -36,6 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionDone"
+                android:textColor="@color/secondary_text"
                 android:hint="@string/recycler_image_story_create_category_hint"
                 android:inputType="textAutoComplete|textAutoCorrect|text" />
         </LinearLayout>
@@ -45,7 +46,7 @@
             android:layout_height="match_parent"
             android:layout_marginEnd="@dimen/standard_padding"
             android:layout_marginStart="@dimen/standard_padding"
-            android:background="@color/grey_pinkish"
+            android:background="@color/divider"
             android:orientation="vertical" />
 
         <ImageView
