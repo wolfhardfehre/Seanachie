@@ -137,8 +137,10 @@ public class ImageStoriesFragment extends Fragment implements
 
     @Override
     public void onClick(int position) {
-        session.store(R.string.pref_editable_image_story, imageStories.get(position).getId());
-        Snackbar.make(coordinator, imageStories.get(position).getName(), LENGTH_LONG).show();
+        session.removeSetting(R.string.pref_cached_image_story);
+        ImageStory selected = imageStories.get(position);
+        session.store(R.string.pref_editable_image_story, selected.getId());
+        Snackbar.make(coordinator, selected.getName(), LENGTH_LONG).show();
         ((HomeActivity) context).changeContent(NAVIGATION_NEW_IMAGE_STORIES);
     }
 

@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
+import com.nicefontaine.seanachie.data.Session;
 import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.sources.DataSource;
 import com.nicefontaine.seanachie.data.sources.categories.CategoriesRepository;
@@ -75,6 +76,7 @@ public class HomeActivity extends AppCompatActivity implements
     public static final int NAVIGATION_NEW_IMAGE_STORIES = R.string.navigation_image_story_create;
     public static final int NAVIGATION_ABOUT = R.id.navigation_about;
 
+    @Inject protected Session session;
     @Inject protected FormsRepository formsRepository;
     @Inject protected ImageStoriesRepository imageStoriesRepository;
     @Inject protected CategoriesRepository categoriesRepository;
@@ -185,7 +187,8 @@ public class HomeActivity extends AppCompatActivity implements
 
     private void setupImageStoryCreateFragment() {
         ImageStoryCreateFragment imageStoryCreateFragment = ImageStoryCreateFragment.getInstance();
-        new ImageStoryCreatePresenter(selectedForm, imageStoriesRepository, imageStoryCreateFragment);
+        new ImageStoryCreatePresenter(selectedForm, imageStoriesRepository, session,
+                imageStoryCreateFragment);
         replaceContainerFragment(imageStoryCreateFragment);
     }
 

@@ -21,12 +21,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+import com.nicefontaine.seanachie.data.models.Category;
 import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.ui.BasePresenter;
 import com.nicefontaine.seanachie.ui.BaseView;
 
 import java.io.IOException;
+import java.util.List;
 
 
 interface ImageStoryCreateContract {
@@ -35,32 +37,22 @@ interface ImageStoryCreateContract {
 
         void loadImageStory(ImageStory imageStory);
 
-        void noData();
+        void updateRecycler(List<Category> categories);
 
-        void initRecycler();
-
-        void updateRecycler();
-
-        void setStory(String story);
+        void cacheText(String story);
 
         void setPhoto(Bitmap bitmap);
 
-        void loadImagePath(String path);
+        void notify(int text);
 
         void finish();
     }
 
     interface Presenter extends BasePresenter {
 
-        void onEditImageStory(int id);
+        void save(ImageStory imageStory);
 
-        void saveImageStory(ImageStory imageStory);
-
-        void editImageStory(ImageStory imageStory);
-
-        void takePicture(Activity activity);
-
-        void story(Activity activity, String text);
+        void cache(ImageStory current);
 
         void displayPhoto(String path, int width);
 

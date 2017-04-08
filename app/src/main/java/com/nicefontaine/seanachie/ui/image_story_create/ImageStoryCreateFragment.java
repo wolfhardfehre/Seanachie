@@ -23,6 +23,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -30,6 +32,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -43,20 +46,22 @@ import android.widget.ImageView;
 
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
-import com.nicefontaine.seanachie.data.Session;
 import com.nicefontaine.seanachie.data.models.Category;
 import com.nicefontaine.seanachie.data.models.ImageStory;
 import com.nicefontaine.seanachie.ui.HomeActivity;
+import com.nicefontaine.seanachie.utils.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import timber.log.Timber;
 
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -70,6 +75,9 @@ public class ImageStoryCreateFragment extends Fragment implements
         ImageStoryCreateContract.View,
         ImageStoryCreateAdapter.OnImageClickedListener, Toolbar.OnMenuItemClickListener {
 
+    private static final String REPOSITORY = "com.nicefontaine.seanachie.fileprovider";
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
+    public static final int REQUEST_SPEECH_TO_TEXT = 2;
     private static final int WRITE_EXTERNAL_STORAGE_PERMISSION = 1;
     private static final int RECORD_AUDIO_PERMISSION = 2;
 
@@ -79,9 +87,6 @@ public class ImageStoryCreateFragment extends Fragment implements
     private ImageStoryCreateContract.Presenter presenter;
     private int currentPosition;
     private ImageStory currentStory;
-    private int storyId;
-
-    @Inject protected Session session;
 
     @BindView(R.id.toolbar) protected Toolbar toolbar;
     @BindView(R.id.collapsing) protected CollapsingToolbarLayout toolbarLayout;
@@ -135,12 +140,20 @@ public class ImageStoryCreateFragment extends Fragment implements
     @Override
     public void onResume() {
         super.onResume();
-        storyId = session.get(R.string.pref_editable_image_story, -1);
-        if (storyId == -1) {
-            presenter.onResume();
-        } else {
-            presenter.onEditImageStory(storyId);
-        }
+        presenter.onResume();
+        initRecycler();
+    }
+
+    public void initRecycler() {
+        List<Category> categories = new ArrayList<>();
+        this.adapter = new ImageStoryCreateAdapter(this, context, categories);
+        recycler.setLayoutManager(new LinearLayoutManager(context, VERTICAL, false));
+        recycler.setAdapter(adapter);
+    }
+
+    @Override
+    public void setPresenter(ImageStoryCreateContract.Presenter presenter) {
+        this.presenter = presenter;
     }
 
     @Override
@@ -150,10 +163,10 @@ public class ImageStoryCreateFragment extends Fragment implements
     }
 
     @OnClick(R.id.f_image_story_create_photo_card)
-    public void takePicture() {
+    public void takePhoto() {
         boolean permission = askPermission(WRITE_EXTERNAL_STORAGE);
         if (permission) {
-            presenter.takePicture(getActivity());
+            photo();
         } else {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[] {WRITE_EXTERNAL_STORAGE},
@@ -163,37 +176,29 @@ public class ImageStoryCreateFragment extends Fragment implements
 
     @Override
     public void loadImageStory(ImageStory imageStory) {
-        ImageStory cached = session.get(R.string.pref_cached_image_story, new ImageStory());
-        currentStory = cached.isEmpty() ? imageStory : cached;
+        currentStory = imageStory;
         categories = currentStory.getForm().getCategories();
         String path = currentStory.getImagePath();
-        if (path != null) presenter.displayPhoto(path, 300);
+        if (path != null) {
+            presenter.displayPhoto(path, 300);
+        }
     }
 
     @Override
-    public void noData() {
-        makeSnackbar(R.string.no_data);
-    }
-
-    @Override
-    public void initRecycler() {
-        if (categories == null) categories = new ArrayList<>();
-        this.adapter = new ImageStoryCreateAdapter(this, context, categories);
-        recycler.setLayoutManager(new LinearLayoutManager(context, VERTICAL, false));
-        recycler.setAdapter(adapter);
-    }
-
-    @Override
-    public void updateRecycler() {
+    public void updateRecycler(List<Category> categories) {
         adapter.setCategories(categories);
         adapter.notifyDataSetChanged();
     }
 
     @Override
-    public void setStory(String story) {
-        if (story.isEmpty()) {
-            makeSnackbar(R.string.story_create_empty_story);
-        }
+    public void onEditText(int position, String text) {
+        currentPosition = position;
+        cacheText(text);
+    }
+
+    @Override
+    public void cacheText(String story) {
+        if (story.isEmpty()) notify(R.string.story_create_empty_story);
         categories.get(currentPosition).setValue(story);
         cache();
     }
@@ -203,20 +208,14 @@ public class ImageStoryCreateFragment extends Fragment implements
         photo.setImageBitmap(bitmap);
     }
 
-    @Override
-    public void loadImagePath(String path) {
+    public void cacheImagePath(String path) {
         currentStory.image(path);
         cache();
     }
 
     private void cache() {
         currentStory.categories(categories);
-        session.store(R.string.pref_cached_image_story, currentStory);
-    }
-
-    @Override
-    public void setPresenter(ImageStoryCreateContract.Presenter presenter) {
-        this.presenter = presenter;
+        presenter.cache(currentStory);
     }
 
     @Override
@@ -225,17 +224,10 @@ public class ImageStoryCreateFragment extends Fragment implements
     }
 
     @Override
-    public void onEditText(int position, String text) {
-        currentPosition = position;
-        setStory(text);
-    }
-
-    @Override
     public void onSpeechToText(int position) {
         currentPosition = position;
-        boolean permission = askPermission(RECORD_AUDIO);
-        if (permission) {
-            presenter.story(getActivity(), getString(R.string.story_create_speech_to_text));
+        if (askPermission(RECORD_AUDIO)) {
+            story();
         } else {
             ActivityCompat.requestPermissions(getActivity(),
                     new String[] {RECORD_AUDIO},
@@ -254,16 +246,16 @@ public class ImageStoryCreateFragment extends Fragment implements
         switch (request) {
             case WRITE_EXTERNAL_STORAGE_PERMISSION:
                 if (isGranted(results)) {
-                    presenter.takePicture(getActivity());
+                    photo();
                 } else {
-                    makeSnackbar(R.string.story_create_write_permission);
+                    notify(R.string.story_create_write_permission);
                 }
                 break;
             case RECORD_AUDIO_PERMISSION:
                 if (isGranted(results)) {
-                    presenter.story(getActivity(), getString(R.string.story_create_speech_to_text));
+                    story();
                 } else {
-                    makeSnackbar(R.string.story_create_audio_permission);
+                    notify(R.string.story_create_audio_permission);
                 }
                 break;
         }
@@ -273,7 +265,8 @@ public class ImageStoryCreateFragment extends Fragment implements
         return results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED;
     }
 
-    private void makeSnackbar(int text) {
+    @Override
+    public void notify(int text) {
         Snackbar.make(coordinator, text, LENGTH_LONG).show();
     }
 
@@ -283,7 +276,7 @@ public class ImageStoryCreateFragment extends Fragment implements
             case R.id.m_image_story_send:
                 sendEmail(); break;
             case R.id.m_image_story_save:
-                saveImageStory(); break;
+                presenter.save(currentStory); break;
         }
         return true;
     }
@@ -294,7 +287,7 @@ public class ImageStoryCreateFragment extends Fragment implements
                 .putExtra(android.content.Intent.EXTRA_SUBJECT,
                         currentStory.getCategoriesContent())
                 .putExtra(android.content.Intent.EXTRA_TEXT,
-                        getString(R.string.story_create_send_with));                ;
+                        getString(R.string.story_create_send_with));
         String path = currentStory.getImagePath();
         if (!isNull(path)) {
             emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(new File(path)));
@@ -302,17 +295,31 @@ public class ImageStoryCreateFragment extends Fragment implements
         startActivity(Intent.createChooser(emailIntent, getString(R.string.story_create_sending)));
     }
 
-    public void saveImageStory() {
-        String name = categories.get(0).getValue();
-        String story = categories.get(categories.size() - 1).getValue();
-        if (name == null) {
-            makeSnackbar(R.string.story_create_no_name);
-        } else if (story == null) {
-            makeSnackbar(R.string.story_create_no_story);
-        } else if (storyId == -1) {
-            presenter.saveImageStory(currentStory);
-        } else {
-            presenter.editImageStory(currentStory);
+    private void photo() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            try {
+                File photoFile = FileUtils.createImageFile();
+                cacheImagePath(photoFile.getAbsolutePath());
+                Uri photoURI = FileProvider.getUriForFile(getActivity(), REPOSITORY, photoFile);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                getActivity().startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            } catch (IOException e) {
+                Timber.e(e);
+            }
         }
+    }
+
+    public void story() {
+        Intent intent = getSpeechIntent(getString(R.string.story_create_speech_to_text));
+        getActivity().startActivityForResult(intent, REQUEST_SPEECH_TO_TEXT);
+    }
+
+    private Intent getSpeechIntent(String text) {
+        return new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                .putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                .putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+                .putExtra(RecognizerIntent.EXTRA_PROMPT, text);
     }
 }
