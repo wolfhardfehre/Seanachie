@@ -1,5 +1,7 @@
 <resources>
 
+    <!-- AppTheme -->
+
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -10,6 +12,8 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <!-- Toolbar -->
+
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:minHeight">?attr/actionBarSize</item>
         <item name="popupTheme">@style/AppTheme.PopupOverlay</item>
@@ -19,4 +23,408 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">@dimen/text_medium</item>
     </style>
+
+    <!-- CardView -->
+
+    <style name="CardViewStyle" parent="CardView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/card_margin</item>
+        <item name="cardCornerRadius">4dp</item>
+        <item name="cardElevation">4dp</item>
+    </style>
+
+    <item name="f_imagestory_photo_card" type="id"/>
+
+    <style name="CardViewStyle.Story" parent="CardViewStyle">
+        <item name="android:id">@id/f_imagestory_photo_card</item>
+    </style>
+
+    <!-- Text -->
+
+    <style name="TextViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="TextViewStyle.Primary" parent="TextViewStyle">
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textSize">@dimen/text_medium</item>
+        <item name="android:paddingBottom">@dimen/text_divider_padding</item>
+    </style>
+
+    <style name="TextViewStyle.Secondary" parent="TextViewStyle">
+        <item name="android:textColor">@color/secondary_text</item>
+        <item name="android:textSize">@dimen/text_hint_size</item>
+    </style>
+
+    <style name="TextViewStyle.Label" parent="TextViewStyle">
+        <item name="android:textColor">@color/primary_text</item>
+        <item name="android:textSize">@dimen/text_label_size</item>
+    </style>
+
+    <item name="recycler_item_image_story_create_key" type="id"/>
+
+    <style name="TextViewStyle.Label.Story" parent="TextViewStyle.Label">
+        <item name="android:id">@id/recycler_item_image_story_create_key</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:text">@string/recycler_forms_heading</item>
+    </style>
+
+    <item name="recycler_item_category_key" type="id"/>
+
+    <style name="TextViewStyle.Primary.Category" parent="TextViewStyle.Primary">
+        <item name="android:id">@id/recycler_item_category_key</item>
+        <item name="android:padding">@dimen/standard_padding</item>
+        <item name="android:text">@string/recycler_forms_heading</item>
+    </style>
+
+    <item name="recycler_forms_item_heading" type="id"/>
+
+    <style name="TextViewStyle.Primary.Form" parent="TextViewStyle.Primary">
+        <item name="android:id">@id/recycler_forms_item_heading</item>
+        <item name="android:text">@string/recycler_forms_heading</item>
+    </style>
+
+    <item name="recycler_forms_item_content" type="id"/>
+
+    <style name="TextViewStyle.Secondary.Form" parent="TextViewStyle.Secondary">
+        <item name="android:id">@id/recycler_forms_item_content</item>
+        <item name="android:text">@string/recycler_forms_content</item>
+    </style>
+
+    <item name="recycler_item_image_story_name" type="id"/>
+
+    <style name="TextViewStyle.Primary.Stories" parent="TextViewStyle.Primary">
+        <item name="android:id">@id/recycler_item_image_story_name</item>
+        <item name="android:text">@string/recycler_forms_heading</item>
+    </style>
+
+    <item name="recycler_item_image_story_first_category" type="id"/>
+
+    <style name="TextViewStyle.Secondary.Stories" parent="TextViewStyle.Secondary">
+        <item name="android:id">@id/recycler_item_image_story_first_category</item>
+        <item name="android:text">@string/recycler_forms_content</item>
+    </style>
+
+    <item name="adapter_formpicker_textview" type="id"/>
+
+    <style name="TextViewStyle.Secondary.Picker" parent="TextViewStyle.Secondary">
+        <item name="android:id">@id/adapter_formpicker_textview</item>
+        <item name="android:text">@string/app_name</item>
+        <item name="android:padding">@dimen/standard_padding</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- BaseLayout -->
+
+    <style name="BaseLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fitsSystemWindows">false</item>
+    </style>
+
+    <style name="BaseLayoutStyle.Main" parent="BaseLayoutStyle">
+    </style>
+
+    <item name="a_base_content" type="id"/>
+
+    <style name="BaseLayoutStyle.Sub" parent="BaseLayoutStyle">
+        <item name="android:id">@id/a_base_content</item>
+    </style>
+
+    <item name="a_base_drawer_layout" type="id"/>
+
+    <style name="BaseLayoutStyle.Drawer" parent="BaseLayoutStyle">
+        <item name="android:id">@id/a_base_drawer_layout</item>
+    </style>
+
+    <item name="a_base_navigation_view" type="id"/>
+
+    <style name="NavigationViewStyle">
+        <item name="android:id">@id/a_base_navigation_view</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="headerLayout">@layout/drawer_header</item>
+        <item name="menu">@menu/drawer_body</item>
+    </style>
+
+    <!-- LinearLayout -->
+
+    <style name="LinearLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="LinearLayoutStyle.Vertical" parent="LinearLayoutStyle">
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="LinearLayoutStyle.Horizontal" parent="LinearLayoutStyle">
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="LinearLayoutStyle.Vertical.Form" parent="LinearLayoutStyle.Vertical">
+        <item name="android:layout_weight">0.2</item>
+        <item name="android:padding">@dimen/standard_padding</item>
+    </style>
+
+    <style name="LinearLayoutStyle.Vertical.Stories" parent="LinearLayoutStyle.Vertical">
+        <item name="android:layout_weight">0.2</item>
+        <item name="android:padding">@dimen/standard_padding</item>
+    </style>
+
+    <style name="LinearLayoutStyle.Vertical.Story" parent="LinearLayoutStyle.Vertical">
+        <item name="android:layout_weight">0.2</item>
+    </style>
+
+    <style name="LinearLayoutStyle.Horizontal.Story" parent="LinearLayoutStyle.Horizontal">
+        <item name="android:padding">@dimen/standard_padding</item>
+    </style>
+
+    <!-- RelativeLayout -->
+
+    <style name="RelativeLayoutStyle" />
+
+    <style name="RelativeLayoutStyle.DrawerHead">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">300dp</item>
+        <item name="android:background">@color/colorPrimaryDark</item>
+    </style>
+
+    <!-- CoordinatorLayout -->
+
+    <style name="CoordinatorLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <item name="f_base_coordinator" type="id"/>
+
+    <style name="CoordinatorLayoutStyle.Base" parent="CoordinatorLayoutStyle">
+        <item name="android:id">@id/f_base_coordinator</item>
+    </style>
+
+    <item name="f_imagestory_coordinator" type="id"/>
+
+    <style name="CoordinatorLayoutStyle.Story" parent="CoordinatorLayoutStyle">
+        <item name="android:id">@id/f_imagestory_coordinator</item>
+    </style>
+
+    <item name="f_create_form_coordinator" type="id"/>
+
+    <style name="CoordinatorLayoutStyle.Form" parent="CoordinatorLayoutStyle">
+        <item name="android:id">@id/f_create_form_coordinator</item>
+    </style>
+
+    <!-- AppBarLayout -->
+
+    <style name="AppBarLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="AppBarLayoutStyle.Base" parent="AppBarLayoutStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:theme">@style/AppTheme.AppBarOverlay</item>
+    </style>
+
+    <style name="AppBarLayoutStyle.Story" parent="AppBarLayoutStyle">
+        <item name="android:layout_height">300dp</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+    </style>
+
+    <!-- CollapsingToolbarLayout -->
+
+    <item name="collapsing" type="id"/>
+
+    <style name="CollapsingToolbarLayoutStyle">
+        <item name="android:id">@id/collapsing</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="CollapsingToolbarLayoutStyle.Story" parent="CollapsingToolbarLayoutStyle">
+        <item name="contentScrim">?attr/colorPrimary</item>
+        <item name="expandedTitleMarginEnd">64dp</item>
+        <item name="expandedTitleMarginStart">48dp</item>
+        <item name="layout_scrollFlags">scroll|exitUntilCollapsed</item>
+        <item name="statusBarScrim">@android:color/transparent</item>
+    </style>
+
+    <!-- NestedScrollView -->
+
+    <style name="NestedScrollViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingBottom">?attr/actionBarSize</item>
+        <item name="layout_behavior">@string/appbar_scrolling_view_behavior</item>
+    </style>
+
+    <!-- RecyclerView -->
+
+    <style name="RecyclerViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <item name="f_base_recycler" type="id"/>
+
+    <style name="RecyclerViewStyle.Base" parent="RecyclerViewStyle">
+        <item name="android:id">@id/f_base_recycler</item>
+    </style>
+
+    <item name="f_imagestory_recycler" type="id"/>
+
+    <style name="RecyclerViewStyle.Story" parent="RecyclerViewStyle">
+        <item name="android:id">@id/f_imagestory_recycler</item>
+    </style>
+
+    <item name="f_create_form_recycler" type="id"/>
+
+    <style name="RecyclerViewStyle.Form" parent="RecyclerViewStyle">
+        <item name="android:id">@id/f_create_form_recycler</item>
+    </style>
+
+    <!-- Toolbar -->
+
+    <item name="toolbar" type="id"/>
+
+    <style name="ToolbarStyle">
+        <item name="android:id">@id/toolbar</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="layout_collapseMode">pin</item>
+    </style>
+
+    <style name="ToolbarStyle.Base" parent="ToolbarStyle">
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <style name="ToolbarStyle.Story" parent="ToolbarStyle">
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
+
+    <!-- FloatingActionButton -->
+
+    <style name="FloatinActionButtonStyle" parent="Widget.Design.FloatingActionButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/standard_padding</item>
+        <item name="android:layout_gravity">bottom|end</item>
+        <item name="fabSize">normal</item>
+    </style>
+
+    <item name="f_base_fab" type="id"/>
+
+    <style name="FloatinActionButtonStyle.Base" parent="FloatinActionButtonStyle">
+        <item name="android:id">@id/f_base_fab</item>
+        <item name="srcCompat">@drawable/ic_add_white_48dp</item>
+    </style>
+
+    <item name="f_create_form_fab" type="id"/>
+
+    <style name="FloatinActionButtonStyle.Save" parent="FloatinActionButtonStyle">
+        <item name="android:id">@id/f_create_form_fab</item>
+        <item name="srcCompat">@drawable/ic_save_white_24dp</item>
+    </style>
+
+    <!-- ImageView -->
+
+    <style name="ImageViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <item name="recycler_item_image_story_image" type="id"/>
+
+    <style name="ImageViewStyle.Stories" parent="ImageViewStyle">
+        <item name="android:id">@id/recycler_item_image_story_image</item>
+        <item name="android:layout_weight">0.5</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:src">@drawable/seanachie</item>
+    </style>
+
+    <item name="recycler_item_image_story_create_image" type="id"/>
+
+    <style name="ImageViewStyle.Story" parent="ImageViewStyle">
+        <item name="android:layout_weight">0.8</item>
+        <item name="android:alpha">0.5</item>
+    </style>
+
+    <style name="ImageViewStyle.Story.Mic" parent="ImageViewStyle.Story">
+        <item name="android:id">@id/recycler_item_image_story_create_image</item>
+        <item name="android:src">@drawable/ic_mic_black_48dp</item>
+    </style>
+
+    <style name="ImageViewStyle.DrawerHead">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:src">@drawable/seanachie</item>
+    </style>
+
+    <item name="f_imagestory_backdrop" type="id"/>
+
+    <style name="ImageViewStyle.Story.Backdrop" parent="ImageViewStyle">
+        <item name="android:id">@id/f_imagestory_backdrop</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:src">@drawable/seanachie</item>
+        <item name="layout_collapseMode">pin</item>
+    </style>
+
+    <item name="f_imagestory_photo" type="id"/>
+
+    <style name="ImageViewStyle.Story.Photo" parent="ImageViewStyle.Story">
+        <item name="android:id">@id/f_imagestory_photo</item>
+        <item name="android:layout_height">30dp</item>
+        <item name="android:layout_margin">@dimen/standard_padding</item>
+        <item name="android:src">@drawable/ic_add_a_photo_black_48dp</item>
+    </style>
+
+    <!-- EditText -->
+
+    <style name="EditTextStyle" parent="TextViewStyle.Secondary">
+        <item name="android:imeOptions">actionDone</item>
+        <item name="android:inputType">textAutoComplete|textAutoCorrect|text</item>
+    </style>
+
+    <item name="recycler_item_image_story_create_edittext" type="id"/>
+
+    <style name="EditTextStyle.Story" parent="EditTextStyle">
+        <item name="android:id">@id/recycler_item_image_story_create_edittext</item>
+        <item name="android:hint">@string/recycler_image_story_create_category_hint</item>
+    </style>
+
+    <item name="f_create_category_edittext" type="id"/>
+
+    <style name="EditTextStyle.Category" parent="EditTextStyle">
+        <item name="android:id">@id/f_create_category_edittext</item>
+        <item name="android:hint">@string/category_create_hint</item>
+        <item name="android:layout_margin">@dimen/standard_padding</item>
+    </style>
+
+    <item name="f_create_form_edittext" type="id"/>
+
+    <style name="EditTextStyle.Form" parent="EditTextStyle">
+        <item name="android:id">@id/f_create_form_edittext</item>
+        <item name="android:hint">@string/category_create_hint</item>
+        <item name="android:layout_margin">@dimen/standard_padding</item>
+    </style>
+
+    <!-- Divider -->
+
+    <style name="Divider">
+        <item name="android:background">@color/divider</item>
+    </style>
+
+    <style name="Divider.Vertical" parent="Divider">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginStart">@dimen/standard_padding</item>
+        <item name="android:layout_marginEnd">@dimen/standard_padding</item>
+    </style>
+
 </resources>

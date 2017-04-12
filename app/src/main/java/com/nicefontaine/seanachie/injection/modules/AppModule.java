@@ -22,9 +22,9 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
-import com.nicefontaine.seanachie.data.DefaultPersistentData;
-import com.nicefontaine.seanachie.data.PersistentData;
-import com.nicefontaine.seanachie.data.Session;
+import com.nicefontaine.seanachie.data.sources.session.DefaultPersistentData;
+import com.nicefontaine.seanachie.data.sources.session.PersistentData;
+import com.nicefontaine.seanachie.data.sources.session.Session;
 
 import javax.inject.Singleton;
 

@@ -5,7 +5,7 @@ ext.versionMajor = 0
 ext.versionMinor = 1
 ext.versionPatch = 0
 ext.versionClassifier = "SNAPSHOT"
-ext.minimumSdkVersion = 16
+ext.minimumSdkVersion = 17
 
 android {
     compileSdkVersion 25

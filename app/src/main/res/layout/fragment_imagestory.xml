@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout style="@style/CoordinatorLayoutStyle.Story">
+    <android.support.design.widget.AppBarLayout style="@style/AppBarLayoutStyle.Story">
+        <android.support.design.widget.CollapsingToolbarLayout style="@style/CollapsingToolbarLayoutStyle.Story">
+            <ImageView style="@style/ImageViewStyle.Story.Backdrop" />
+            <android.support.v7.widget.Toolbar style="@style/ToolbarStyle.Story" />
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v4.widget.NestedScrollView style="@style/NestedScrollViewStyle">
+        <LinearLayout style="@style/LinearLayoutStyle.Vertical">
+            <android.support.v7.widget.CardView style="@style/CardViewStyle.Story">
+                <ImageView style="@style/ImageViewStyle.Story.Photo"/>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.RecyclerView style="@style/RecyclerViewStyle.Story" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

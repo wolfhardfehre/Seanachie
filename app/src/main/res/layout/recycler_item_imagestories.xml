@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView style="@style/CardViewStyle">
+    <LinearLayout style="@style/LinearLayoutStyle.Horizontal">
+        <ImageView style="@style/ImageViewStyle.Stories" />
+        <LinearLayout style="@style/LinearLayoutStyle.Vertical.Stories" >
+            <TextView style="@style/TextViewStyle.Primary.Stories"/>
+            <TextView style="@style/TextViewStyle.Secondary.Stories" />
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

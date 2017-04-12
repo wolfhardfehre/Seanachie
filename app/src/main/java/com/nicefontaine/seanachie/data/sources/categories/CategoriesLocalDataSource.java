@@ -21,12 +21,11 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.nicefontaine.seanachie.data.DatabaseHelper;
+import com.nicefontaine.seanachie.data.sources.DatabaseHelper;
 import com.nicefontaine.seanachie.data.models.Category;
 import com.nicefontaine.seanachie.data.sources.DataSource;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.Callable;
 
 import static dagger.internal.Preconditions.checkNotNull;

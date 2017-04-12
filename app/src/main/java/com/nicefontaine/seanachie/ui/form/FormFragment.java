@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-package com.nicefontaine.seanachie.ui.forms;
-
+package com.nicefontaine.seanachie.ui.form;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -29,12 +28,15 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
-import com.nicefontaine.seanachie.data.models.Form;
+import com.nicefontaine.seanachie.data.models.Category;
 import com.nicefontaine.seanachie.ui.BaseActivity;
 import com.nicefontaine.seanachie.ui.ItemTouchCallback;
+import com.nicefontaine.seanachie.ui.categories.CategoriesAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,26 +47,28 @@ import butterknife.OnClick;
 
 import static android.support.design.widget.Snackbar.LENGTH_LONG;
 import static android.widget.LinearLayout.VERTICAL;
-import static com.nicefontaine.seanachie.ui.BaseActivity.NAVIGATION_NEW_FROM;
+import static com.nicefontaine.seanachie.ui.BaseActivity.NAVIGATION_FORMS;
+import static com.nicefontaine.seanachie.utils.Utils.isNull;
 
 
-public class FormsFragment extends Fragment implements
-        FormsContract.View,
+public class FormFragment extends Fragment implements
+        FormContract.View,
         ItemTouchCallback.OnItemTouchListener {
 
     @BindView(R.id.toolbar) protected Toolbar toolbar;
-    @BindView(R.id.f_base_coordinator) public CoordinatorLayout coordinator;
-    @BindView(R.id.f_base_recycler) protected RecyclerView recycler;
+    @BindView(R.id.f_create_form_coordinator) protected CoordinatorLayout coordinator;
+    @BindView(R.id.f_create_form_recycler) protected RecyclerView recycler;
+    @BindView(R.id.f_create_form_edittext) protected EditText editText;
     private Context context;
-    private List<Form> forms;
-    private FormsAdapter adapter;
-    private FormsContract.Presenter presenter;
+    private List<Category> categories;
+    private CategoriesAdapter adapter;
+    private FormContract.Presenter presenter;
 
-    public static FormsFragment getInstance() {
-        return new FormsFragment();
+    public static FormFragment getInstance() {
+        return new FormFragment();
     }
 
-    public FormsFragment() {
+    public FormFragment() {
         // Required empty public constructor
     }
 
@@ -77,79 +81,80 @@ public class FormsFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_base, container, false);
+        View view = inflater.inflate(R.layout.fragment_form, container, false);
         ((SeanachieApp) context.getApplicationContext()).getAppComponent().inject(this);
         ButterKnife.bind(this, view);
         return view;
     }
-
     @Override
     public void onStart() {
         super.onStart();
         ((BaseActivity) context).initNavigationDrawer(toolbar);
-        toolbar.setTitle(R.string.navigation_forms);
-    }
-
-    @Override
-    public void setPresenter(FormsContract.Presenter presenter) {
-        this.presenter = presenter;
+        toolbar.setTitle(R.string.navigation_form_create);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         presenter.onResume();
+        initEditText();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        presenter.onPause();
+    private void initEditText() {
+        editText.requestFocus();
+        InputMethodManager imm = (InputMethodManager)
+                context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        });
     }
 
-    @OnClick(R.id.f_base_fab)
-    public void addForm() {
-        ((BaseActivity) context).changeContent(NAVIGATION_NEW_FROM);
+    @OnClick(R.id.f_create_form_fab)
+    public void createForm() {
+        String name = getString(R.string.story_create_name);
+        String story = getString(R.string.story_create_story);
+        presenter.createForm(editText.getText().toString(), name, story);
     }
 
     @Override
     public void onItemMove(int fromPosition, int toPosition) {
-        forms = adapter.getForms();
-        presenter.itemMoved(forms);
-        makeSnackbar(R.string.elements_reordered);
+        categories = adapter.getCategories();
+        presenter.itemMoved(categories);
+        Snackbar.make(coordinator, R.string.elements_reordered, LENGTH_LONG).show();
     }
 
     @Override
     public void onItemDismiss(int position) {
-        Form form = forms.get(position);
-        Integer formId = form.getId();
-        presenter.itemRemoved(formId);
-        makeSnackbar(R.string.elements_deleted);
+        Category category = categories.get(position);
+        Integer categoryId = category.getId();
+        categories.remove(category);
+        presenter.itemRemoved(categoryId);
+        Snackbar.make(coordinator, R.string.elements_deleted, LENGTH_LONG).show();
     }
 
     @Override
-    public void loadForms(List<Form> forms) {
-        this.forms = forms;
+    public void setPresenter(FormContract.Presenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @Override
+    public void loadCategories(List<Category> categories) {
+        this.categories = categories;
     }
 
     @Override
     public void noData() {
-        makeSnackbar(R.string.no_data);
+        Snackbar.make(coordinator, R.string.no_data, LENGTH_LONG).show();
     }
 
     @Override
     public void initRecycler() {
-        if (forms == null) forms = new ArrayList<>();
-        adapter = new FormsAdapter(context, forms);
+        if (isNull(categories)) categories = new ArrayList<>();
+        this.adapter = new CategoriesAdapter(context, categories);
         recycler.setLayoutManager(new LinearLayoutManager(context, VERTICAL, false));
         recycler.setAdapter(adapter);
         initItemTouchCallback();
-    }
-
-    @Override
-    public void updateRecycler() {
-        adapter.setForms(forms);
-        adapter.notifyDataSetChanged();
     }
 
     private void initItemTouchCallback() {
@@ -158,7 +163,14 @@ public class FormsFragment extends Fragment implements
         touchHelper.attachToRecyclerView(recycler);
     }
 
-    private void makeSnackbar(int text) {
-        Snackbar.make(coordinator, text, LENGTH_LONG).show();
+    @Override
+    public void updateRecycler() {
+        adapter.setCategories(categories);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void finish() {
+        ((BaseActivity) context).changeContent(NAVIGATION_FORMS);
     }
 }

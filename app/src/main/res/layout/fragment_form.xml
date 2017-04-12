@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout style="@style/CoordinatorLayoutStyle.Form">
+    <android.support.design.widget.AppBarLayout style="@style/AppBarLayoutStyle.Base">
+        <android.support.v7.widget.Toolbar style="@style/ToolbarStyle.Base"/>
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v4.widget.NestedScrollView style="@style/NestedScrollViewStyle">
+        <LinearLayout style="@style/LinearLayoutStyle.Vertical">
+            <android.support.v7.widget.CardView style="@style/CardViewStyle">
+                <EditText style="@style/EditTextStyle.Form" />
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.RecyclerView style="@style/RecyclerViewStyle.Form" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+    <android.support.design.widget.FloatingActionButton style="@style/FloatinActionButtonStyle.Save" />
+</android.support.design.widget.CoordinatorLayout>

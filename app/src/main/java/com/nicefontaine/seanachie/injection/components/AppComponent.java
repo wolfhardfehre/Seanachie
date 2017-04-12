@@ -18,15 +18,15 @@ package com.nicefontaine.seanachie.injection.components;
 
 
 import com.nicefontaine.seanachie.injection.modules.SourceModule;
-import com.nicefontaine.seanachie.ui.HomeActivity;
+import com.nicefontaine.seanachie.ui.BaseActivity;
 import com.nicefontaine.seanachie.ui.categories.CategoriesFragment;
-import com.nicefontaine.seanachie.ui.form_create.FormCreateFragment;
-import com.nicefontaine.seanachie.ui.category_create.CategoryCreateFragmentDialog;
+import com.nicefontaine.seanachie.ui.form.FormFragment;
+import com.nicefontaine.seanachie.ui.category.CategoryFragmentDialog;
 import com.nicefontaine.seanachie.ui.forms.FormsFragment;
 import com.nicefontaine.seanachie.injection.modules.AppModule;
-import com.nicefontaine.seanachie.data.Session;
-import com.nicefontaine.seanachie.ui.image_story_create.ImageStoryCreateFragment;
-import com.nicefontaine.seanachie.ui.image_stories.ImageStoriesFragment;
+import com.nicefontaine.seanachie.data.sources.session.Session;
+import com.nicefontaine.seanachie.ui.imagestory.ImageStoryFragment;
+import com.nicefontaine.seanachie.ui.imagestories.ImageStoriesFragment;
 
 import javax.inject.Singleton;
 
@@ -34,19 +34,22 @@ import dagger.Component;
 
 
 @Singleton
-@Component(modules={AppModule.class, SourceModule.class})
+@Component(modules={
+        AppModule.class,
+        SourceModule.class
+})
 public interface AppComponent {
 
     // activities
-    void inject(HomeActivity homeActivity);
+    void inject(BaseActivity baseActivity);
 
     // fragments
     void inject(FormsFragment formsFragment);
     void inject(ImageStoriesFragment imageStoriesFragment);
     void inject(CategoriesFragment categoriesFragment);
-    void inject(FormCreateFragment formCreateFragment);
-    void inject(ImageStoryCreateFragment imageStoryCreateFragment);
-    void inject(CategoryCreateFragmentDialog categoryCreateFragmentDialog);
+    void inject(FormFragment formFragment);
+    void inject(ImageStoryFragment imageStoryFragment);
+    void inject(CategoryFragmentDialog categoryFragmentDialog);
 
     // Session
     void inject(Session session);

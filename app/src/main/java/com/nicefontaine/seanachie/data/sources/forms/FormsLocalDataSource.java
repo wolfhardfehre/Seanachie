@@ -21,7 +21,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.j256.ormlite.dao.RuntimeExceptionDao;
-import com.nicefontaine.seanachie.data.DatabaseHelper;
+import com.nicefontaine.seanachie.data.sources.DatabaseHelper;
 import com.nicefontaine.seanachie.data.models.Form;
 import com.nicefontaine.seanachie.data.sources.DataSource;
 

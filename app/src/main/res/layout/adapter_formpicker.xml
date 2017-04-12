@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout style="@style/LinearLayoutStyle.Vertical">
+    <android.support.v7.widget.CardView style="@style/CardViewStyle">
+        <TextView style="@style/TextViewStyle.Secondary.Picker"/>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

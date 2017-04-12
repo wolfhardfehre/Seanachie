@@ -34,9 +34,9 @@ import android.view.ViewGroup;
 import com.nicefontaine.seanachie.R;
 import com.nicefontaine.seanachie.SeanachieApp;
 import com.nicefontaine.seanachie.data.models.Category;
-import com.nicefontaine.seanachie.ui.HomeActivity;
+import com.nicefontaine.seanachie.ui.BaseActivity;
 import com.nicefontaine.seanachie.ui.ItemTouchCallback;
-import com.nicefontaine.seanachie.ui.category_create.CategoryCreateFragmentDialog;
+import com.nicefontaine.seanachie.ui.category.CategoryFragmentDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ import static android.widget.LinearLayout.VERTICAL;
 public class CategoriesFragment extends Fragment implements
         CategoriesContract.View,
         ItemTouchCallback.OnItemTouchListener,
-        CategoryCreateFragmentDialog.OnCategoryListener {
+        CategoryFragmentDialog.OnCategoryListener {
 
     private static final String CREATE_CATEGORY = "create_category";
 
@@ -90,7 +90,7 @@ public class CategoriesFragment extends Fragment implements
     @Override
     public void onStart() {
         super.onStart();
-        ((HomeActivity) context).initNavigationDrawer(toolbar);
+        ((BaseActivity) context).initNavigationDrawer(toolbar);
         toolbar.setTitle(R.string.navigation_categories);
     }
 
@@ -108,7 +108,7 @@ public class CategoriesFragment extends Fragment implements
 
     @OnClick(R.id.f_base_fab)
     public void addCategory() {
-        DialogFragment dialogFragment = CategoryCreateFragmentDialog.getInstance(this);
+        DialogFragment dialogFragment = CategoryFragmentDialog.getInstance(this);
         dialogFragment.show(getActivity().getSupportFragmentManager(), CREATE_CATEGORY);
     }
 
